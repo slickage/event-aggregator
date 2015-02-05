@@ -1,0 +1,16 @@
+{
+  "name": "event-aggregator",
+  "version": "0.0.1",
+  "description": "event aggregator for hnl.io",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Trevor Alexander",
+  "license": "ISC",
+  "dependencies": {
+    "lodash": "^3.1.0"
+  }
+}
