@@ -3,60 +3,36 @@
 // https://www.eventbriteapi.com/v3/events/search/?token=5OTKXGRDYWFRA2SWONXT
 // API doc:
 // https://developer.eventbrite.com/docs/event-search/
-var http = require('http');
-var _ = require('lodash');
+var eb = require('node-eventbrite');
 
-// TODO move these out
-var baseURL = 'eventbriteapi.com';
+// TODO move this out
 var token = '5OTKXGRDYWFRA2SWONXT';
 
-var getEventbriteEvents = function(authToken, queryHash) {
-  // function expects a base url, a token for the request auth, and a hash of
-  // query terms with their values
-	if (typeof(queryHash) !== 'undefined') { // if query hash passed
-		var vals = Object.keys(queryHash).map(function(thiskey) {
-			return(queryHash[thiskey]);
-		});
-		
-		var queryPairs = _.zip(Object.keys(queryHash), vals);
-		var queryString = queryPairs.map(function(x) { 
-			return(x[0] + '=' + x[1]);
-		}).reduce(function(y,z) { 
-			return(y + '&' + z);
-		});
-	} else { // if no query hash passed
-		var queryString = '';
-	}
 
-  var options = {
-    hostname: 'www.eventbriteapi.com',
-    path: '/v3/events/search/?' + queryString + '&token=' + token,
-		method: 'GET'
-  };
-
-  callback = function(response) {
-    var str = '';
-
-		console.log('HTTP', response.statusCode);
-		console.log('Request header: ', JSON.stringify(response.headers));
-    // for now just collect up all the data and return the whole thing as string
-    response.on('data', function (chunk) {
-      str += chunk;
+try {
+    var ebapi = eb({
+      token : token,
+      version : 'v3',
+			DEBUG : true
     });
-    response.on('end', function () {
-      return(str);
-    });
-  }
-	
-  var getReq = http.request(options, callback);
-
-	getReq.on('error', function (err) {
-		console.log(err);
-		console.log(url);
-		console.log(queryString);
-	});
-
-	getReq.end();
+} catch (error) {
+    console.log(error.message); // the options are missing, this function throws an error. 
 }
 
-exports['getEventbriteEvents'] = getEventbriteEvents;
+try {
+	ebapi.search({'venue.city' : 'Honolulu'},
+						 function(data) {
+							 return(data);
+						 });
+} catch (error) {
+	console.log(error.message);
+}
+ 
+// ebapi.owned_events({ user_id: 30 }, function (error, data) {
+//     if (error)
+//         console.log(error.message);
+//     else
+//         console.log(JSON.stringify(data)); // Do something with your data! 
+// });
+
+// exports['getEventbriteEvents'] = getEventbriteEvents;
