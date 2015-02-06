@@ -6,14 +6,15 @@
 var http = require('http');
 var _ = require('lodash');
 
+// TODO move these out
 var baseURL = 'https://www.eventbriteapi.com/v3/events/search/';
 var token = '5OTKXGRDYWFRA2SWONXT';
 
-var getEvents = function(url, authToken, queryHash) {
+var getEventbriteEvents = function(url, authToken, queryHash) {
   // function expects a base url, a token for the request auth, and a hash of
   // query terms with their values
   var vals = Object.keys(queryHash).map(function(thiskey) {
-    return(queryHash[thiskey]);
+    return(queryHash[thiskey]); // TODO fail gracefully if queryHash empty
   });
   
   var queryPairs = _.zip(Object.keys(queryHash), vals);
@@ -43,3 +44,5 @@ var getEvents = function(url, authToken, queryHash) {
   http.request(options, callback).end();
 
 }
+
+module.exports = getEventbriteEvents;
