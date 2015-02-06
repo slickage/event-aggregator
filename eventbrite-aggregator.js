@@ -30,20 +30,20 @@ var getEventbriteEvents = function(authToken, queryHash) {
 
   var options = {
     hostname: 'www.eventbriteapi.com',
-    path: '/v3/events/search/?' + queryString + "&token=" + token
+    path: '/v3/events/search/?' + queryString + '&token=' + token,
+		method: 'GET'
   };
 
-	console.log(options.path);
-	
   callback = function(response) {
     var str = '';
 
+		console.log('HTTP', response.statusCode);
+		console.log('Request header: ', JSON.stringify(response.headers));
     // for now just collect up all the data and return the whole thing as string
     response.on('data', function (chunk) {
       str += chunk;
     });
     response.on('end', function () {
-			console.log(str);
       return(str);
     });
   }
