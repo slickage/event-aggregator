@@ -7,13 +7,12 @@ var http = require('http');
 var _ = require('lodash');
 
 // TODO move these out
-var baseURL = 'https://www.eventbriteapi.com/v3/events/search/';
+var baseURL = 'eventbriteapi.com';
 var token = '5OTKXGRDYWFRA2SWONXT';
 
-var getEventbriteEvents = function(url, authToken, queryHash) {
+var getEventbriteEvents = function(authToken, queryHash) {
   // function expects a base url, a token for the request auth, and a hash of
   // query terms with their values
-
 	if (typeof(queryHash) !== 'undefined') { // if query hash passed
 		var vals = Object.keys(queryHash).map(function(thiskey) {
 			return(queryHash[thiskey]);
@@ -21,19 +20,21 @@ var getEventbriteEvents = function(url, authToken, queryHash) {
 		
 		var queryPairs = _.zip(Object.keys(queryHash), vals);
 		var queryString = queryPairs.map(function(x) { 
-			return(x[0] + '=' + x[1])
+			return(x[0] + '=' + x[1]);
 		}).reduce(function(y,z) { 
 			return(y + '&' + z);
 		});
 	} else { // if no query hash passed
-		queryString = '';
+		var queryString = '';
 	}
-	
+
   var options = {
-    host: baseURL,
-    path: queryString
+    hostname: 'www.eventbriteapi.com',
+    path: '/v3/events/search/?' + queryString + "&token=" + token
   };
 
+	console.log(options.path);
+	
   callback = function(response) {
     var str = '';
 
@@ -42,12 +43,20 @@ var getEventbriteEvents = function(url, authToken, queryHash) {
       str += chunk;
     });
     response.on('end', function () {
+			console.log(str);
       return(str);
     });
   }
+	
+  var getReq = http.request(options, callback);
 
-  http.request(options, callback).end();
+	getReq.on('error', function (err) {
+		console.log(err);
+		console.log(url);
+		console.log(queryString);
+	});
 
+	getReq.end();
 }
 
 exports['getEventbriteEvents'] = getEventbriteEvents;
