@@ -3,7 +3,7 @@
 // https://www.eventbriteapi.com/v3/events/search/?token=5OTKXGRDYWFRA2SWONXT
 // API doc:
 // https://developer.eventbrite.com/docs/event-search/
-var request = require('request');
+var https = require('https');
 var _ = require('lodash');
 
 // TODO move these out
@@ -19,12 +19,12 @@ var getEventbriteEvents = function(authToken, queryHash) {
 	}
 
   var options = {
-    hostname: 'https://www.eventbriteapi.com'+'/v3/events/search/?' +
-			queryString + '&token=' + token,
+    hostname: 'www.eventbriteapi.com',
+		path: '/v3/events/search/?' + queryString + '&token=' + token,
 		method: 'GET'
   };
 
-  callback = function(response) {
+  callback = function(response) { // function for async data return
     var str = '';
 
 		console.log('HTTP', response.statusCode);
@@ -38,9 +38,10 @@ var getEventbriteEvents = function(authToken, queryHash) {
     });
   }
 	
-  var getReq = http.request(options, callback);
+  var getReq = https.request(options, callback);
 
 	getReq.on('error', function (err) {
+	getReq.on('error', function (err) { // for debugging request
 		console.log(err);
 		console.log(url);
 		console.log(queryString);
