@@ -9,7 +9,7 @@ var _ = require('lodash');
 // TODO move these out
 var token = '5OTKXGRDYWFRA2SWONXT';
 
-var getEventbriteEvents = function(authToken, queryHash) {
+var getEventbriteEvents = function(authToken, callback, queryHash) {
   // function expects a base url, a token for the request auth, and a hash of
   // query terms with their values
 	if (typeof(queryHash) !== 'undefined') { // if query hash passed
@@ -24,30 +24,14 @@ var getEventbriteEvents = function(authToken, queryHash) {
 		method: 'GET'
   };
 
-  callback = function(response) { // function for async data return
-    var str = '';
-
-		console.log('HTTP', response.statusCode);
-		console.log('Request header: ', JSON.stringify(response.headers));
-    // for now just collect up all the data and return the whole thing as string
-    response.on('data', function (chunk) {
-      str += chunk;
-    });
-    response.on('end', function () {
-      return(str);
-    });
-  }
-	
   var getReq = https.request(options, callback);
 
-	getReq.on('error', function (err) {
 	getReq.on('error', function (err) { // for debugging request
 		console.log(err);
 		console.log(url);
-		console.log(queryString);
 	});
 
-	getReq.end();
+  getReq.end();
 }
 
 var hashToGET = function(queryHash) {
