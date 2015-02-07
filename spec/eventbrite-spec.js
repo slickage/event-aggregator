@@ -42,8 +42,14 @@ describe('eventbrite event fetcher', function() {
 		}
 		eb.getEventbriteEvents(token, callback);
 
-		afterEach(function() { // restore timeout interval
-      jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
-    });
+		
 	});
+
+	it('returns valid JSON from a few common queries', function(done) {
+		
+	});
+	
+	afterEach(function() { // restore timeout interval
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
+  });
 });
