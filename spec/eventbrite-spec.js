@@ -3,11 +3,14 @@ describe('eventbrite event fetcher', function() {
 	var eb = require('../eventbrite-aggregator.js');
 
  	var token = '5OTKXGRDYWFRA2SWONXT';
-	var queryHash = '{}';
 
 	beforeEach(function() { // change timeout interval
     originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+  });	
+
+	afterEach(function() { // restore timeout interval
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
   });
 	
 	it('exports a query function', function() {
@@ -46,10 +49,37 @@ describe('eventbrite event fetcher', function() {
 	});
 
 	it('returns valid JSON from a few common queries', function(done) {
+		var firstQuery = {
+			'venue.city' : 'honolulu'
+		};
+		var secondQuery = {
+			'venue.city' : 'honolulu',
+			'start_date.keyword' : 'today'
+		};
+		var thirdQuery = {
+			'location.address' : '2800 woodlawn drive'
+		};
 		
+		callback = function(response) { // function for async data return
+			var str = '';
+			
+			// console.log('HTTP', response.statusCode);
+			// console.log('Request header: ', JSON.stringify(response.headers));
+			// for now just collect up all the data and return the whole thing as string
+			response.on('data', function (chunk) {
+				str += chunk;
+			});
+			response.on('end', function () {
+				var queryReturn = JSON.parse(str);
+
+				expect(typeof(queryReturn) === 'defined');
+				expect(Array.isArray(queryReturn.events));
+				done();
+			});
+		}
+		eb.getEventbriteEvents(token, callback, firstQuery);
+		eb.getEventbriteEvents(token, callback, secondQuery);
+		eb.getEventbriteEvents(token, callback, thirdQuery);
 	});
 	
-	afterEach(function() { // restore timeout interval
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
-  });
 });
