@@ -4,7 +4,7 @@ describe('eventbrite event fetcher', function() {
 
  	var token = '5OTKXGRDYWFRA2SWONXT';
 
-	beforeEach(function() { // change timeout interval
+	beforeEach(function() { // change timeout interval for async calls
     originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
   });	
