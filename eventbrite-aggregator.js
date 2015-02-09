@@ -6,9 +6,6 @@
 var https = require('https');
 var _ = require('lodash');
 
-// TODO move these out
-var token = '5OTKXGRDYWFRA2SWONXT';
-
 var getEventbriteEvents = function(authToken, callback, queryHash) {
   // function expects a base url, a token for the request auth, and a hash of
   // query terms with their values
@@ -20,7 +17,7 @@ var getEventbriteEvents = function(authToken, callback, queryHash) {
 
   var options = {
     hostname: 'www.eventbriteapi.com',
-		path: '/v3/events/search/?' + queryString + '&token=' + token,
+		path: '/v3/events/search/?' + queryString + '&token=' + authToken,
 		method: 'GET'
   };
 
