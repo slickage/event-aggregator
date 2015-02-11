@@ -1,6 +1,7 @@
 # Meetup test app tokens
 
 - **caveat:** meetup only allows geo-based searching through `open_events`.
+- **caveat:** meetup's HTTP API returns XML, not JSON
 
 ## App Description
 

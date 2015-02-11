@@ -1,5 +1,6 @@
 describe('meetup event fetcher', function() {
 	var https = require('https');
+	var parseXMLString = require('xml2js').parseString;
 	var mu = require('../meetup-aggregator.js');
 
 	beforeEach(function() { // change timeout interval
@@ -35,7 +36,9 @@ describe('meetup event fetcher', function() {
 				str += chunk;
 			});
 			response.on('end', function () {
-				var queryReturn = JSON.parse(str);
+				var queryReturn = parseXMLString(str, function(err, result) {
+					return(JSON.parse(result)) // TODO check this callback
+				});
 
 				expect(typeof(queryReturn) === 'defined');
 				expect(Array.isArray(queryReturn.events));
