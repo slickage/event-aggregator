@@ -50,7 +50,16 @@ describe('meetup event fetcher', function() {
 	});
 
 	it('returns valid JSON from a few common queries', function(done) {
-		
+		var firstQuery = {
+			'city' : 'honolulu'
+		};
+		var secondQuery = {
+			'city' : 'honolulu',
+			'time' : '1d'
+		};
+		var thirdQuery = {
+			'text' : '2800 woodlawn drive'
+		};
 		
 	});
 	
