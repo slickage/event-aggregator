@@ -3,7 +3,10 @@
 - **caveat:** meetup only allows geo-based searching through `open_events`.
 - **caveat:** meetup's HTTP API returns XML, not JSON
 
-## App Description
+## Description
+trevor's throwaway meetup account
+
+- Key: 1f2239571b3a4d192f505f185b407935
 
 # Useful API query params
 

@@ -3,6 +3,8 @@ describe('meetup event fetcher', function() {
 	var parseXMLString = require('xml2js').parseString;
 	var mu = require('../meetup-aggregator.js');
 
+	var token = '1f2239571b3a4d192f505f185b407935';
+	
 	beforeEach(function() { // change timeout interval
     originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
