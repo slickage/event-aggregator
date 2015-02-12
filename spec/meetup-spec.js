@@ -1,6 +1,6 @@
 describe('meetup event fetcher', function() {
 	var https = require('https');
-	var parseXMLString = require('xml2js').parseString;
+	var xmlParser = require('xml2json');
 	var mu = require('../meetup-aggregator.js');
 
 	var token = '1f2239571b3a4d192f505f185b407935';
@@ -27,7 +27,7 @@ describe('meetup event fetcher', function() {
 		expect(https.request).toHaveBeenCalled();
 	});
 
-	xit('returns a JSON string of valid events', function(done) {
+	it('returns a JSON string of valid events', function(done) {
 		callback = function(response) { // function for async data return
 			var str = '';
 			
@@ -38,20 +38,18 @@ describe('meetup event fetcher', function() {
 				str += chunk;
 			});
 			response.on('end', function () {
-				var queryReturn = parseXMLString(str, function(err, result) {
-					return(JSON.parse(result)) // TODO check this callback
-				});
+				var queryReturn = xmlParser.toJson(str); // TODO examine async behavior
 
 				expect(typeof(queryReturn) === 'defined');
 				expect(Array.isArray(queryReturn.results));
 				done();
 			});
 		}
-		mu.getMeetupEvents(token, callback);//
+		mu.getMeetupEvents(token, callback);
 		
 	});
 
-	xit('returns valid JSON from a few common queries', function(done) {
+	it('returns valid JSON from a few common queries', function(done) {
 		var firstQuery = {
 			'city' : 'honolulu'
 		};
@@ -62,6 +60,27 @@ describe('meetup event fetcher', function() {
 		var thirdQuery = {
 			'text' : '2800 woodlawn drive'
 		};
+
+		callback = function(response) { // function for async data return
+			var str = '';
+			
+			// console.log('HTTP', response.statusCode);
+			// console.log('Request header: ', JSON.stringify(response.headers));
+			// for now just collect up all the data and return the whole thing as string
+			response.on('data', function (chunk) {
+				str += chunk;
+			});
+			response.on('end', function () {
+				var queryReturn = xmlParser.toJson(str); // TODO examine for blocking 
+
+				expect(typeof(queryReturn) === 'defined');
+				expect(Array.isArray(queryReturn.results));
+				done();
+			});
+		}
+		mu.getMeetupEvents(token, callback, firstQuery);
+		mu.getMeetupEvents(token, callback, secondQuery);
+		mu.getMeetupEvents(token, callback, thirdQuery);
 		
 	});
 	
