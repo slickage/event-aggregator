@@ -26,6 +26,6 @@ The goal is to write the following functions:
     - [ ] needs check of async conversion from XML to JSON
   - [ ] Docs
 - [ ] Facebook wrapper
-  - [x] Tests
+  - [ ] Tests
   - [ ] Implementation
   - [ ] Docs
