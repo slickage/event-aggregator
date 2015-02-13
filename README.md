@@ -29,3 +29,7 @@ The goal is to write the following functions:
   - [ ] Tests
   - [ ] Implementation
   - [ ] Docs
+- [ ] Universal event query generator/parser
+  - [ ] Tests
+  - [ ] Implementation
+  - [ ] Docs
