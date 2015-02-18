@@ -1,12 +1,12 @@
 # Meetup test app tokens
 
 - **caveat:** meetup only allows geo-based searching through `open_events`.
-- **caveat:** meetup's HTTP API returns XML, not JSON
 
 ## Description
 trevor's throwaway meetup account
 
 - Key: 1f2239571b3a4d192f505f185b407935
+- URL: https://api.meetup.com/2/open_events?
 
 # Useful API query params
 

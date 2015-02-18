@@ -4,7 +4,7 @@
 // API doc:
 // https://developer.eventbrite.com/docs/event-search/
 var https = require('https');
-var _ = require('lodash');
+var hashToGET = require('./hashtoget.js');
 
 var getEventbriteEvents = function(authToken, callback, queryHash) {
   // function expects a base url, a token for the request auth, and a hash of
@@ -29,24 +29,6 @@ var getEventbriteEvents = function(authToken, callback, queryHash) {
 	});
 
   getReq.end();
-}
-
-var hashToGET = function(queryHash) {
-	// converts a set of key-value pairs to a string using the typical GET
-	// format of key=value&key=value&...
-
-	// get values as array
-	var vals = Object.keys(queryHash).map(function(thiskey) {
-		return(queryHash[thiskey]);
-	});
-	// interleave keys and values
-	var queryPairs = _.zip(Object.keys(queryHash), vals);
-	// join as key=value string
-	var queryString = queryPairs.map(function(x) { 
-		return(x[0] + '=' + x[1]);
-	}).reduce(function(y,z) { 
-		return(y + '&' + z);
-	});
 }
 
 exports['getEventbriteEvents'] = getEventbriteEvents;
