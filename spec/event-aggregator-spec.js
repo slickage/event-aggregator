@@ -1,4 +1,6 @@
 describe('main aggregator', function() {
+	var path = require('path');
+	var fs = require('fs');
 	var eventAggregator = require('../event-aggregator.js');
 
 	beforeEach(function() { // change timeout interval for async calls
@@ -10,16 +12,19 @@ describe('main aggregator', function() {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
   });
 	
-	xit('properly imports config vars', function() {
-
+	it('imports config vars from file', function() {
+		spyOn(fs, 'readFileSync').and.callThrough();
+		expect(fs.readFileSync).toHaveBeenCalledWith('./config.json', 'utf8');
 	});
 
-	xit('fails gracefully if config var not present', function() {
+	it('fails gracefully if config file not present', function() {
+		spyOn(fs, 'readFileSync').and.throwError("ENOTFOUND");
 
+		expect(eventAggregator()).toThrowError("Missing config.json"); // TODO args
 	});
 	
 	xit('queries all event providers by default', function() {
-
+		// TODO find a way to generalize this for all providers procedurally
 	});
 
 	xit('queries a named event provider when passed the appropriate arg',
@@ -40,6 +45,7 @@ describe('main aggregator', function() {
 	});
 
 	xit('makes as many POST requests as there are new events', function() {
-
+		// TODO get number of events found from return value, compare with
+		// https.request.calls.count()
 	});
 });
