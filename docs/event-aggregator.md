@@ -12,6 +12,8 @@
    
 3. POSTs data to API, event by event
 
+4. returns number of events found or throws all errors caught within
+
 ## data forming
 
 [Spec](https://github.com/talexand/event-aggregator/wiki/Initial-Spec) requires
