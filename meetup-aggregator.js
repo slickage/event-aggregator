@@ -1,8 +1,6 @@
 // Meetup event searching
-// Anonymous query:
-// https://www.eventbriteapi.com/v3/events/search/?token=5OTKXGRDYWFRA2SWONXT
-// API doc:
-// https://developer.eventbrite.com/docs/event-search/
+// Query:
+// https://www.eventbriteapi.com/2/open_events.json?key=
 var https = require('https');
 var _ = require('lodash');
 
@@ -17,7 +15,7 @@ var getMeetupEvents = function(authToken, callback, queryHash) {
 
   var options = {
     hostname: 'api.meetup.com',
-		path: '/2/open_events.xml?' + queryString + '&key=' + authToken,
+		path: '/2/open_events.json?' + queryString + '&key=' + authToken,
 		method: 'GET'
   };
 
