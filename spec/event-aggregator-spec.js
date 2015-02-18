@@ -38,4 +38,8 @@ describe('main aggregator', function() {
 			
 			expect(https.request).toHaveBeenCalledWith(); // TODO insert args here
 	});
+
+	xit('makes as many POST requests as there are new events', function() {
+
+	});
 });

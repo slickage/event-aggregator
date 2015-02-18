@@ -10,7 +10,7 @@
     3. hnl.io API url
     4. API tokens by provider (key/val pairs)
    
-3. POSTs data to API
+3. POSTs data to API, event by event
 
 ## data forming
 
