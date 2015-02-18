@@ -1,6 +1,5 @@
 describe('meetup event fetcher', function() {
 	var https = require('https');
-	var xmlParser = require('xml2json');
 	var mu = require('../meetup-aggregator.js');
 
 	var token = '1f2239571b3a4d192f505f185b407935';
@@ -38,7 +37,7 @@ describe('meetup event fetcher', function() {
 				str += chunk;
 			});
 			response.on('end', function () {
-				var queryReturn = xmlParser.toJson(str); // TODO examine async behavior
+				var queryReturn = JSON.parse(str); // TODO examine async behavior
 
 				expect(typeof(queryReturn) === 'defined');
 				expect(Array.isArray(queryReturn.results));
@@ -71,7 +70,7 @@ describe('meetup event fetcher', function() {
 				str += chunk;
 			});
 			response.on('end', function () {
-				var queryReturn = xmlParser.toJson(str); // TODO examine for blocking 
+				var queryReturn = JSON.parse(str);
 
 				expect(typeof(queryReturn) === 'defined');
 				expect(Array.isArray(queryReturn.results));
