@@ -1,6 +1,8 @@
 describe('main aggregator', function() {
 	var fs = require('fs');
-	var agg = require('../eventprovidermodules.js');
+	var agg = require('../eventprovidermodules.js'); // query providers
+	// lump in the main function also for testing convenience
+  agg.eventAggregator = require('../event-aggregator.js'); 
 
 	beforeEach(function() { // change timeout interval for async calls
     originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
@@ -26,8 +28,8 @@ describe('main aggregator', function() {
 		expect(function() {agg.eventAggregator()}).toThrowError(); // TODO args
 	});
 	
-	xit('queries all event providers by default', function() {
-		// TODO find a way to generalize this for all providers procedurally
+	it('queries all event providers by default', function() {
+		// TODO generalize this for all available providers
 
 		spyOn(agg,'getEventbriteEvents').andcallThrough();
 		spyOn(agg,'getMeetupEvents').andcallThrough();
