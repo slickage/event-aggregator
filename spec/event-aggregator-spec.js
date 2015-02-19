@@ -1,7 +1,6 @@
 describe('main aggregator', function() {
-	var path = require('path');
 	var fs = require('fs');
-	var agg = require('./eventprovidermodules.js');
+	var agg = require('../eventprovidermodules.js');
 
 	beforeEach(function() { // change timeout interval for async calls
     originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
@@ -12,7 +11,7 @@ describe('main aggregator', function() {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
   });
 	
-	xit('imports config vars from file', function() {
+	it('imports config vars from file', function() {
 		spyOn(fs, 'readFileSync').and.callThrough();
 
 		agg.eventAggregator(); // TODO arguments
@@ -20,10 +19,11 @@ describe('main aggregator', function() {
 		expect(fs.readFileSync).toHaveBeenCalledWith('./config.json', 'utf8');
 	});
 
-	xit('fails gracefully if config file not present', function() {
+	it('fails gracefully if config file not present', function() {
 		spyOn(fs, 'readFileSync').and.throwError("ENOTFOUND");
 
-		expect(agg.eventAggregator()).toThrowError("Missing config JSON"); // TODO args
+		// see http://stackoverflow.com/a/4144803/2023432 for why the lambda
+		expect(function() {agg.eventAggregator()}).toThrowError(); // TODO args
 	});
 	
 	xit('queries all event providers by default', function() {
