@@ -48,10 +48,11 @@ describe('main aggregator', function() {
 			 expect(agg.getEventbriteEvents).toHaveBeenCalled();
 	});
 
-	xit('creates a payload of events with spec-compliant structure', function() {
+	it('creates a payload of events with spec-compliant structure', function() {
 		var specprops = ['title', 'body', 'start', 'end', 'created_at',
 										 'updated_at', 'imported'];
-		
+		pending("Not sure how to pluck out the payloads when they're built internal to helper functions.");
+
 		spyOn(https, 'request').and.callThrough();
 		eventAggregator(); // TODO args
 
