@@ -52,13 +52,33 @@ var submitEvents = function(eventObj) {
 };
 
 // functions for simplifying event provider returns so they meet spec and then
-// passing them on to POSTEvent, one by one
-var submitEventbriteEvents = function() {
+// passing them on to POSTEvents
+var submitEventbriteEvents = function(rawEvents) {
+  var eventList =
+      rawEvents['events'].map(function(thisEvent) { // this is an array
+          // fill a new event object with the spec fields
+        var cleanEvent = {};
+        
+        cleanEvent['title'] = thisEvent['name']['text'];
+        cleanEvent['body'] = thisEvent['description']['text'];
+        cleanEvent['start'] = thisEvent['start']['utc']; // TODO convert to unix ms
+        cleanEvent['end'] = thisEvent['end']['utc']; // TODO convert to unix ms
+        cleanEvent['created_at'] = thisEvent['created']; // TODO convert to unix ms
+        cleanEvent['updated_at'] = thisEvent['changed'];
+        cleanEvent['imported'] = {
+          "resource_url" : thisEvent['resource_uri'],
+          "service" : 'Eventbrite'
+        };
+      });
   
+  // pass to POST, return result
+  POSTEvents(eventList);
 };
 
-var submitMeetupEvents = function() {
+var submitMeetupEvents = function(rawEvents) {
 
+  // pass to POST, return result
+  POSTEvents(eventList);
 };
 
 var POSTEvents = function(eventList, apiURL) {
