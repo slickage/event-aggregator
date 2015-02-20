@@ -3,7 +3,7 @@ var https = require('https');
 var fs = require('fs');
 var agg = require('./eventprovidermodules.js'); // query providers
 
-var eventAggregator = function(queryHash) {
+var eventAggregator = function(queryHash, singleProvider) {
 	// bring in config vars
 	try {
 		var config = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
@@ -15,12 +15,15 @@ var eventAggregator = function(queryHash) {
 		}
 	}
 
+  var eventProviders = Object.keys(agg);
+  if (typeof singleProvider !== 'undefined') { // singleProvider case
+    eventProviders = [singleProvider];
+  }
+  
 	// call each of the query providers brought in with matching configs
-	Object.keys(agg).map(function(thisQueryFunc) {
-    // console.log('func: ', thisQueryFunc);
-    // console.log('token: ', config['providers'][thisQueryFunc]['token']);
-		agg[thisQueryFunc](config['providers'][thisQueryFunc]['token'],
-											 submitEvents, queryHash);
+	eventProviders.map(function(thisEventQueryFunc) {
+		agg[thisEventQueryFunc](config['providers'][thisEventQueryFunc]['token'],
+											      submitEvents, queryHash);
 	});
 }
 

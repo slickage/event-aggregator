@@ -40,12 +40,12 @@ describe('main aggregator', function() {
 		expect(agg.getMeetupEvents).toHaveBeenCalled();
 	});
 
-	xit('queries a named event provider when passed the appropriate arg',
+	it('queries a named event provider when passed the appropriate arg',
 		 function() {
 
-			 spyOn(agg,'getMeetupEvents').andcallThrough();
-			 eventAggregator(); // TODO args
-			 expect(agg.getMeetupEvents).toHaveBeenCalled();
+			 spyOn(agg,'getEventbriteEvents').and.callThrough();
+			 eventAggregator({'dog' : 'cat'}, 'getEventbriteEvents'); // TODO args
+			 expect(agg.getEventbriteEvents).toHaveBeenCalled();
 	});
 
 	xit('creates a payload of events with spec-compliant structure', function() {
