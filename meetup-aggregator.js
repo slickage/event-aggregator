@@ -29,4 +29,4 @@ var getMeetupEvents = function(authToken, callback, queryHash) {
   getReq.end();
 }
 
-exports['getMeetupEvents'] = getMeetupEvents;
+module.exports = getMeetupEvents;

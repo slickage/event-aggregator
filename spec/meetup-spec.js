@@ -1,6 +1,6 @@
 describe('meetup event fetcher', function() {
 	var https = require('https');
-	var mu = require('../meetup-aggregator.js');
+	var getMeetupEvents = require('../meetup-aggregator.js');
 
 	var token = '1f2239571b3a4d192f505f185b407935';
 	
@@ -15,13 +15,13 @@ describe('meetup event fetcher', function() {
   });
 	
 	it('exports a query function', function() {
-		expect(typeof(mu.getMeetupEvents)).toBe('function');
+		expect(typeof(getMeetupEvents)).toBe('function');
 	});
 	
 	it('submits an HTML request', function() {
 		spyOn(https, 'request').and.callThrough();
 		
-		mu.getMeetupEvents(token);
+		getMeetupEvents(token);
 		
 		expect(https.request).toHaveBeenCalled();
 	});
@@ -44,7 +44,7 @@ describe('meetup event fetcher', function() {
 				done();
 			});
 		}
-		mu.getMeetupEvents(token, callback);
+		getMeetupEvents(token, callback);
 		
 	});
 
@@ -77,9 +77,9 @@ describe('meetup event fetcher', function() {
 				done();
 			});
 		}
-		mu.getMeetupEvents(token, callback, firstQuery);
-		mu.getMeetupEvents(token, callback, secondQuery);
-		mu.getMeetupEvents(token, callback, thirdQuery);
+		getMeetupEvents(token, callback, firstQuery);
+		getMeetupEvents(token, callback, secondQuery);
+		getMeetupEvents(token, callback, thirdQuery);
 		
 	});
 	

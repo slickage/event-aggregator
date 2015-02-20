@@ -31,4 +31,4 @@ var getEventbriteEvents = function(authToken, callback, queryHash) {
   getReq.end();
 }
 
-exports['getEventbriteEvents'] = getEventbriteEvents;
+module.exports = getEventbriteEvents;

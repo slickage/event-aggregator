@@ -1,6 +1,6 @@
 describe('eventbrite event fetcher', function() {
 	var https = require('https');
-	var eb = require('../eventbrite-aggregator.js');
+	var getEventbriteEvents = require('../eventbrite-aggregator.js');
 
  	var token = '5OTKXGRDYWFRA2SWONXT';
 
@@ -14,13 +14,13 @@ describe('eventbrite event fetcher', function() {
   });
 	
 	it('exports a query function', function() {
-		expect(typeof(eb.getEventbriteEvents)).toBe('function');
+		expect(typeof(getEventbriteEvents)).toBe('function');
 	});
 
 	it('submits an HTML request', function() {
 		spyOn(https, 'request').and.callThrough();
 
-		eb.getEventbriteEvents(token);
+		getEventbriteEvents(token);
 
 		expect(https.request).toHaveBeenCalled();
 	});
@@ -43,7 +43,7 @@ describe('eventbrite event fetcher', function() {
 				done();
 			});
 		}
-		eb.getEventbriteEvents(token, callback);
+		getEventbriteEvents(token, callback);
 
 		
 	});
@@ -77,9 +77,9 @@ describe('eventbrite event fetcher', function() {
 				done();
 			});
 		}
-		eb.getEventbriteEvents(token, callback, firstQuery);
-		eb.getEventbriteEvents(token, callback, secondQuery);
-		eb.getEventbriteEvents(token, callback, thirdQuery);
+		getEventbriteEvents(token, callback, firstQuery);
+		getEventbriteEvents(token, callback, secondQuery);
+		getEventbriteEvents(token, callback, thirdQuery);
 	});
 	
 });
