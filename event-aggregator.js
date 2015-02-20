@@ -71,12 +71,13 @@ var submitEventbriteEvents = function(rawEvents) {
         };
       });
   
-  // pass to POST, return result
+  // pass array of objects to POST, return result
   POSTEvents(eventList);
 };
 
 var submitMeetupEvents = function(rawEvents) {
-
+  
+  
   // pass to POST, return result
   POSTEvents(eventList);
 };
@@ -92,7 +93,8 @@ var POSTEvents = function(eventList, apiURL) {
   };
 
 
-	for (thisEvent in eventList) {
+	eventList.foreach(function(thisEvent) { // TODO consider .map for returning
+                                          // res
 		// Set up the request
     var post_req = http.request(post_options, function(res) {
       res.setEncoding('utf8');
@@ -104,7 +106,7 @@ var POSTEvents = function(eventList, apiURL) {
     // post the data
     post_req.write(eventList[thisEvent]);
     post_req.end();
-	}
+	});
 };
 
 module.exports = eventAggregator;
