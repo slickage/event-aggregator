@@ -2,7 +2,7 @@ describe('main aggregator', function() {
 	var fs = require('fs');
 	var agg = require('../eventprovidermodules.js'); // query providers
 	// lump in the main function also for testing convenience
-  agg.eventAggregator = require('../event-aggregator.js'); 
+  eventAggregator = require('../event-aggregator.js'); 
 
 	beforeEach(function() { // change timeout interval for async calls
     originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
@@ -16,7 +16,7 @@ describe('main aggregator', function() {
 	it('imports config vars from file', function() {
 		spyOn(fs, 'readFileSync').and.callThrough();
 
-		agg.eventAggregator(); // TODO arguments
+		eventAggregator(); // TODO arguments
 		
 		expect(fs.readFileSync).toHaveBeenCalledWith('./config.json', 'utf8');
 	});
@@ -25,16 +25,16 @@ describe('main aggregator', function() {
 		spyOn(fs, 'readFileSync').and.throwError("ENOTFOUND");
 
 		// see http://stackoverflow.com/a/4144803/2023432 for why the lambda
-		expect(function() {agg.eventAggregator()}).toThrowError(); // TODO args
+		expect(function() {eventAggregator({})}).toThrowError(); // TODO args
 	});
 	
 	it('queries all event providers by default', function() {
 		// TODO generalize this for all available providers
 
-		spyOn(agg,'getEventbriteEvents').andcallThrough();
-		spyOn(agg,'getMeetupEvents').andcallThrough();
+		spyOn(agg,'getEventbriteEvents').and.callThrough();
+		spyOn(agg,'getMeetupEvents').and.callThrough();
 
-		agg.eventAggregator(); // TODO args
+		eventAggregator(); // TODO args
 
 		expect(agg.getEventbriteEvents).toHaveBeenCalled();
 		expect(agg.getMeetupEvents).toHaveBeenCalled();
@@ -44,7 +44,7 @@ describe('main aggregator', function() {
 		 function() {
 
 			 spyOn(agg,'getMeetupEvents').andcallThrough();
-			 agg.eventAggregator(); // TODO args
+			 eventAggregator(); // TODO args
 			 expect(agg.getMeetupEvents).toHaveBeenCalled();
 	});
 
@@ -53,7 +53,7 @@ describe('main aggregator', function() {
 										 'updated_at', 'imported'];
 		
 		spyOn(https, 'request').and.callThrough();
-		agg.eventAggregator(); // TODO args
+		eventAggregator(); // TODO args
 
 		// should not need async treatment
 		var requestargs = https.request.calls.mostRecent(); 
@@ -69,7 +69,7 @@ describe('main aggregator', function() {
 	xit('makes a valid HTTPS request to the right API endpoint', function() {
 		spyOn(https, 'request').and.callThrough();
 			
-		agg.eventAggregator(); // TODO insert args here
+		eventAggregator(); // TODO insert args here
 			
 		expect(https.request).toHaveBeenCalledWith(); // TODO insert args here
 	});
@@ -80,7 +80,7 @@ describe('main aggregator', function() {
 
 		spyOn(https, 'request').and.callThrough();
 
-		var eventCount = agg.eventAggregator(); // TODO args
+		var eventCount = eventAggregator(); // TODO args
 
 		expect(https.request.calls.count()).toBe(eventCount);
 		done(); // todo check order of this and above line
