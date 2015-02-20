@@ -64,8 +64,26 @@ var submitMeetupEvents = function() {
 var POSTEvents = function(eventList, apiURL) {
 
   // build up POST request, submit simplified event objects one by one
+  var post_options = {
+    hostname: apiURL,
+    port: 443,
+    path: '/',
+    method: 'POST'
+  };
+
+
 	for (thisEvent in eventList) {
-		
+		// Set up the request
+    var post_req = http.request(post_options, function(res) {
+      res.setEncoding('utf8');
+      res.on('data', function (chunk) {
+        console.log('Response: ' + chunk);
+      });
+    });
+    
+    // post the data
+    post_req.write(eventList[thisEvent]);
+    post_req.end();
 	}
 };
 
