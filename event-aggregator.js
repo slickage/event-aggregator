@@ -48,6 +48,7 @@ var submitEvents = function(eventObj) {
   }
 
   // send the event list to hnl.io
+  // pass array of objects to POST, return result
   POSTEvents(eventList, config.api_url);
 };
 
@@ -71,15 +72,25 @@ var submitEventbriteEvents = function(rawEvents) {
         };
       });
   
-  // pass array of objects to POST, return result
-  POSTEvents(eventList);
+  return(eventList);
 };
 
 var submitMeetupEvents = function(rawEvents) {
-  
-  
-  // pass to POST, return result
-  POSTEvents(eventList);
+  rawEvents['results'].map(function(thisEvent) { // this is an array
+    // fill a new event object with the spec fields
+    var cleanEvent = {};
+    cleanEvent['title'] = thisEvent['name'];
+    cleanEvent['body'] = thisEvent['description']; // NOTE this is HTML
+    cleanEvent['start'] = thisEvent['time']; // TODO check if unix epoch ms
+    cleanEvent['end'] = thisEvent['time'] + thisEvent['duration']; // TODO
+    cleanEvent['created_at'] = thisEvent['created']; // TODO
+    cleanEvent['updated_at'] = thisEvent['updated']; // TODO
+    cleanEvent['imported'] = {
+      "resource_url" : thisEvent['event_url'],
+      "service" : 'Meetup'
+    };
+   
+    return(eventList);
 };
 
 var POSTEvents = function(eventList, apiURL) {
