@@ -21,11 +21,14 @@ var eventAggregator = function(queryHash, singleProvider) {
   }
   
 	// call each of the query providers brought in with matching configs
-	eventProviders.map(function(thisEventQueryFunc) {
+	var eventarr = eventProviders.map(function(thisEventQueryFunc) {
 		agg[thisEventQueryFunc](config['providers'][thisEventQueryFunc]['token'],
 											      submitEvents, queryHash);
 	});
-}
+
+	// return number of events added
+	return(eventarr.reduce(function(x,y) {return(x+y);}));
+};
 
 
 
@@ -48,8 +51,8 @@ var submitEvents = function(eventObj) {
   }
 
   // send the event list to hnl.io
-  // pass array of objects to POST, return result
-  POSTEvents(eventList, config.api_url);
+  // pass array of objects to POST, return number of events submitted
+  return(POSTEvents(eventList, config.api_url));
 };
 
 // functions for simplifying event provider returns so they meet spec and then
@@ -76,7 +79,7 @@ var submitEventbriteEvents = function(rawEvents) {
 };
 
 var submitMeetupEvents = function(rawEvents) {
-  rawEvents['results'].map(function(thisEvent) { // this is an array
+  return(rawEvents['results'].map(function(thisEvent) { // this is an array
     // fill a new event object with the spec fields
     var cleanEvent = {};
 
@@ -90,8 +93,8 @@ var submitMeetupEvents = function(rawEvents) {
       "resource_url" : thisEvent['event_url'],
       "service" : 'Meetup'
     };
-   
-    return(eventList);
+
+	}));
 };
 
 var POSTEvents = function(eventList, apiURL, resultCallback) {
