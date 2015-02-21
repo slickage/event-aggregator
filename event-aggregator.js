@@ -29,8 +29,8 @@ var eventAggregator = function(queryHash, singleProvider) {
 	});
 
 	
-	// return number of events successfully POSTed
-	return(eventarr.reduce(function(x,y) {return(x+y);}));
+	// return total number of events successfully POSTed
+	return(eventarr.reduce(function(x,y) { return(x+y); }));
 };
 
 
