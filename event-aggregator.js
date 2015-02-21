@@ -6,7 +6,7 @@ var agg = require('./eventprovidermodules.js'); // query providers
 var eventAggregator = function(queryHash, singleProvider) {
 	// bring in config vars
 	try {
-		var config = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
+		config = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
 	} catch(err) {
 		if (err.code === 'ENOENT') {
 			console.log("Couldn't find config.json in the current directory.");
@@ -79,8 +79,9 @@ var submitMeetupEvents = function(rawEvents) {
   rawEvents['results'].map(function(thisEvent) { // this is an array
     // fill a new event object with the spec fields
     var cleanEvent = {};
+
     cleanEvent['title'] = thisEvent['name'];
-    cleanEvent['body'] = thisEvent['description']; // NOTE this is HTML
+    cleanEvent['body'] = thisEvent['description']; // TODO strip HTML?
     cleanEvent['start'] = thisEvent['time']; // TODO check if unix epoch ms
     cleanEvent['end'] = thisEvent['time'] + thisEvent['duration']; // TODO
     cleanEvent['created_at'] = thisEvent['created']; // TODO
@@ -93,31 +94,36 @@ var submitMeetupEvents = function(rawEvents) {
     return(eventList);
 };
 
-var POSTEvents = function(eventList, apiURL) {
+var POSTEvents = function(eventList, apiURL, resultCallback) {
 
-  // build up POST request, submit simplified event objects one by one
-  var post_options = {
-    hostname: apiURL,
+	return(eventList.map(function(thisEvent) { // TODO consider .map for returning
+		httpsPOSTEvent(thisEvent, apiURL);
+	}));
+	
+};
+
+var httpsPOSTEvent = function(thisEvent, destURL, resultCallback) {
+  var postOptions = {
+    hostname: destURL,
     port: 443,
     path: '/',
     method: 'POST'
   };
-
-
-	eventList.foreach(function(thisEvent) { // TODO consider .map for returning
-                                          // res
-		// Set up the request
-    var post_req = http.request(post_options, function(res) {
-      res.setEncoding('utf8');
-      res.on('data', function (chunk) {
-        console.log('Response: ' + chunk);
-      });
+	
+	// Set up the request
+  var post_req = http.request(post_opts, function(res) {
+    res.setEncoding('utf8');
+    res.on('data', function (chunk) {
+      console.log('Response: ' + chunk);
     });
-    
-    // post the data
-    post_req.write(eventList[thisEvent]);
-    post_req.end();
-	});
+  });
+  
+  // post the data
+  // post_req.write(eventList[thisEvent]);
+  post_req.end(eventList[thisEvent],null,resultCallback);
 };
 
-module.exports = eventAggregator;
+module.exports = {
+	eventAggregator : eventAggregator,
+	httpsPOSTEvent : httpsPOSTEvent // exported for testing
+};
