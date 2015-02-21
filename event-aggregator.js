@@ -105,7 +105,7 @@ var POSTEvents = function(eventList, apiURL, resultCallback) {
 
 	eventList.foreach(function(thisEvent) {
 		httpsPOSTEvent(thisEvent, apiURL, resultCallback);
-	}) ;
+	});
 	
 };
 
