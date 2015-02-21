@@ -26,6 +26,7 @@ var eventAggregator = function(queryHash, singleProvider) {
 											      function(queriedEvents) {
 															submitEvents(queriedEvents, successCallback);
 														}, queryHash);
+		// need to do some callback counting above
 	});
 
 	

@@ -61,7 +61,7 @@ describe('main aggregator', function() {
 	it('creates payloads of events with spec-compliant structure', function() {
 		var specprops = ['title', 'body', 'start', 'end', 'created_at',
 										 'updated_at', 'imported'];
-		pending("Not sure how to pluck out the payloads when they're built internal to helper functions.");
+		pending("pending: not sure how to pluck out the payloads when they're built internal to helper functions.");
 
 		spyOn(https, 'request').and.callThrough();
 		mainMod.eventAggregator(); // TODO args
