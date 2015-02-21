@@ -14,7 +14,7 @@ var eventAggregator = function(queryHash, singleProvider) {
 			throw err;
 		}
 	}
-
+	
   var eventProviders = Object.keys(agg);
   if (typeof singleProvider !== 'undefined') { // singleProvider case
     eventProviders = [singleProvider];
@@ -23,17 +23,20 @@ var eventAggregator = function(queryHash, singleProvider) {
 	// call each of the query providers brought in with matching configs
 	var eventarr = eventProviders.map(function(thisEventQueryFunc) {
 		agg[thisEventQueryFunc](config['providers'][thisEventQueryFunc]['token'],
-											      submitEvents, queryHash);
+											      function(queriedEvents) {
+															submitEvents(queriedEvents, successCallback);
+														}, queryHash);
 	});
 
-	// return number of events added
+	
+	// return number of events successfully POSTed
 	return(eventarr.reduce(function(x,y) {return(x+y);}));
 };
 
 
 
 // our callback for sending event results through the hnl.io API
-var submitEvents = function(eventObj) {
+var submitEvents = function(eventObj, resultCallback) {
 
 	// simplify events
 	// TODO make more general, simple (hash)
@@ -51,8 +54,8 @@ var submitEvents = function(eventObj) {
   }
 
   // send the event list to hnl.io
-  // pass array of objects to POST, return number of events submitted
-  return(POSTEvents(eventList, config.api_url));
+  // pass array of objects to POST
+  POSTEvents(eventList, config.api_url, resultCallback);
 };
 
 // functions for simplifying event provider returns so they meet spec and then
@@ -99,9 +102,9 @@ var submitMeetupEvents = function(rawEvents) {
 
 var POSTEvents = function(eventList, apiURL, resultCallback) {
 
-	return(eventList.map(function(thisEvent) { // TODO consider .map for returning
-		httpsPOSTEvent(thisEvent, apiURL);
-	}));
+	eventList.foreach(function(thisEvent) {
+		httpsPOSTEvent(thisEvent, apiURL, resultCallback);
+	}) ;
 	
 };
 
@@ -114,7 +117,7 @@ var httpsPOSTEvent = function(thisEvent, destURL, resultCallback) {
   };
 	
 	// Set up the request
-  var post_req = http.request(post_opts, function(res) {
+  var postReq = http.request(post_opts, function(res) {
     res.setEncoding('utf8');
     res.on('data', function (chunk) {
       console.log('Response: ' + chunk);
@@ -122,8 +125,19 @@ var httpsPOSTEvent = function(thisEvent, destURL, resultCallback) {
   });
   
   // post the data
-  // post_req.write(eventList[thisEvent]);
-  post_req.end(eventList[thisEvent],null,resultCallback);
+  // postReq.write(eventList[thisEvent]);
+  postReq.end(thisEvent, null, resultCallback);
+};
+
+
+// callback for reporting successful POST
+var successCallback = function(callData) {
+	console.log(callData);
+	if (callData) {
+		return 1;
+	} else {
+		return 0;
+	}
 };
 
 module.exports = {
