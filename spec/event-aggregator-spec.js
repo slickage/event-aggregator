@@ -8,6 +8,10 @@ describe('main aggregator', function() {
 	beforeEach(function() { // change timeout interval for async calls
     originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+
+		var testQuery = {
+			
+		};
   });	
 
 	afterEach(function() { // restore timeout interval
@@ -77,14 +81,14 @@ describe('main aggregator', function() {
 		done();
 	});
 
-	xit('makes as many POST requests as there are new events', function(done) {
+	it('makes as many POST requests as there are new events', function(done) {
 		// TODO get number of events found from return value, compare with
 		// https.request.calls.count()
 		spyOn(mainMod, 'httpsPOSTEvent').and.callThrough();
 
 		var eventCount = mainMod.eventAggregator(); // TODO args
 
-		expect(https.request.calls.count()).toBe(eventCount);
+		expect(mainMod.httpsPOSTEvent.calls.count()).toBe(eventCount);
 		done(); // todo check order of this and above line
 	});
 });
