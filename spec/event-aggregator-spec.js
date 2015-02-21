@@ -5,17 +5,18 @@ describe('main aggregator', function() {
   var mainMod = require('../event-aggregator.js'); // main module
 	var config = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
 
+	// add test query var
+	var testQuery = { // honolulu airport
+		'lat' : 21.33,
+		'lon' : 157.94,
+		'radius' : 10000, // 10km
+		'time' : new Date().valueOf()
+	};
+	
 	beforeEach(function() { // change timeout interval for async calls
     originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
 
-		var testQuery = { // honolulu airport
-			'lat' : 21.33,
-			'lon' : 157.94,
-			'radius' : 10000, // 10km
-			'time' : new Date().valueOf()
-		};
-		
   });	
 
 	afterEach(function() { // restore timeout interval
@@ -79,7 +80,7 @@ describe('main aggregator', function() {
 	it('makes a valid POST request to the right API endpoint', function(done) {
 		spyOn(mainMod, 'httpsPOSTEvent').and.callThrough();
 			
-		mainMod.eventAggregator(); // TODO insert args here
+		mainMod.eventAggregator(testQuery);
 
 		expect(mainMod.httpsPOSTEvent.calls.mostRecent().args[1]).toBe(config.api_url);
 		done();
@@ -90,9 +91,9 @@ describe('main aggregator', function() {
 		// https.request.calls.count()
 		spyOn(mainMod, 'httpsPOSTEvent').and.callThrough();
 
-		var eventCount = mainMod.eventAggregator(); // TODO args
+		var eventCount = mainMod.eventAggregator(testQuery);
 
 		expect(mainMod.httpsPOSTEvent.calls.count()).toBe(eventCount);
-		done(); // todo check order of this and above line
+		done(); // TODO check order of this and above line
 	});
 });

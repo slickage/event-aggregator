@@ -44,6 +44,8 @@ var translateGenQuery = function(genQuery) {
 		 // convert from epoch ms to UTC
 		'start_date.range_end' : new Date(genQuery['time_end']).toUTCString()
 	};
+
+	return(eventbriteQuery);
 };
 
 module.exports = getEventbriteEvents;
