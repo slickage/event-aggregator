@@ -40,8 +40,9 @@ var translateGenQuery = function(genQuery) {
 		'location.longitude' : genQuery['lon'],
 		'location.within' : genQuery['radius']/1000 + "km", // in m
 		// need to explicitly specify 'now'
-		'start_date.range_start' : utcNow,
-		'start_date.range_end' : genQuery['time_end'] // convert from epoch ms to UTC
+		'start_date.range_start' : new Date().toUTCString(),
+		 // convert from epoch ms to UTC
+		'start_date.range_end' : new Date(genQuery['time_end']).toUTCString()
 	};
 };
 
