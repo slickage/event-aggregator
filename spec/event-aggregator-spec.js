@@ -9,9 +9,13 @@ describe('main aggregator', function() {
     originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
 
-		var testQuery = {
-			
+		var testQuery = { // honolulu airport
+			'lat' : 21.33,
+			'lon' : 157.94,
+			'radius' : 10000, // 10km
+			'time' : new Date().valueOf()
 		};
+		
   });	
 
 	afterEach(function() { // restore timeout interval
@@ -49,7 +53,7 @@ describe('main aggregator', function() {
 		 function() {
 
 			 spyOn(agg,'getEventbriteEvents').and.callThrough();
-			 mainMod.eventAggregator({'dog' : 'cat'}, 'getEventbriteEvents'); // TODO args
+			 mainMod.eventAggregator(testQuery, 'getEventbriteEvents');
 			 expect(agg.getEventbriteEvents).toHaveBeenCalled();
 	});
 
