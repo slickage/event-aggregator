@@ -36,7 +36,8 @@ var translateGenQuery = function(genQuery) {
 		'lat' : genQuery['lat'],
 		'lon' : genQuery['lon'],
 		'radius' : genQuery['radius'],
-		'time' : "," + genQuery['time_end']
+		// no need to explicitly specify 'from now' as it is default for meetup
+		'time' : "," + genQuery['time_end'] // as epoch
 	};
 
 	return(meetupQuery);
