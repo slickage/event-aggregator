@@ -9,10 +9,11 @@ var hashToGET = require('./hashtoget.js');
 var getEventbriteEvents = function(authToken, callback, queryHash) {
   // function expects a base url, a token for the request auth, and a hash of
   // query terms with their values
+
+	// default if no query hash passed in
+	var queryString = '';
 	if (typeof(queryHash) !== 'undefined') { // if query hash passed
-		var queryString = hashToGET(queryHash);
-	} else { // if no query hash passed
-		var queryString = '';
+		queryString = hashToGET(translateGenQuery(queryHash));
 	}
 
   var options = {
@@ -29,6 +30,19 @@ var getEventbriteEvents = function(authToken, callback, queryHash) {
 	});
 
   getReq.end();
-}
+};
+
+var translateGenQuery = function(genQuery) {
+	// create a new hash to put an Eventbrite API-compatible query in
+	// predefined params
+	var eventbriteQuery = {
+		'location.latitude' : genQuery['lat'],
+		'location.longitude' : genQuery['lon'],
+		'location.within' : genQuery['radius']/1000 + "km", // in m
+		// need to explicitly specify 'now'
+		'start_date.range_start' : utcNow,
+		'start_date.range_end' : genQuery['time_end'] // convert from epoch ms to UTC
+	};
+};
 
 module.exports = getEventbriteEvents;

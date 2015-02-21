@@ -15,6 +15,8 @@ Event Search Test
   around.
 - `location.longitude` The longitude of the location that you want to search
   around.
+- `location.within` The distance that you want to search around the given
+  location. This should be an integer followed by “mi” or “km”.
 - `venue.city` Only return events that are located in the given city.
 - `organizer.id` Only return events that are organized by a specific Organizer.
 - `user.id` Only return events that are organized by a specific User.
