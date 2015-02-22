@@ -26,7 +26,10 @@ var eventAggregator = function(queryHash, successCallback, providerName) {
 		function(cleanEvents, nextCallback) {
 //			console.log('entered third step');
 			buildPOSTRequests(cleanEvents, config.api_url,
-												function(thisReqRes) {
+												function(thisReqRes) { // callback for individual reqs
+													return(thisReqRes);
+												},
+												function(err, POSTArray) { // callback for whole array
 													nextCallback(null,thisReqRes);
 												});
 		},
@@ -118,10 +121,11 @@ var eventCleaners = { // functions that sanitize received events
 };
 
 // STEP 3
-var buildPOSTRequests = function(eventList, destURL, resultCallback) {
-	eventList.map(function(thisEvent) {
+var buildPOSTRequests = function(eventList, destURL, resultCallback,
+																arrayCallback) {
+	arrayCallback(err, eventList.map(function(thisEvent) {
 			return(httpsPOSTEvent(thisEvent, destURL, resultCallback));
-	});
+	}));
 };
 
 var httpsPOSTEvent = function(thisEvent, destURL, resultCallback) {
