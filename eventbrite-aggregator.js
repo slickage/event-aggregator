@@ -7,29 +7,31 @@ var https = require('https');
 var hashToGET = require('./hashtoget.js');
 
 var getEventbriteEvents = function(authToken, callback, queryHash) {
+//	console.log('getEventbriteEvents entered.');
   // function expects a base url, a token for the request auth, and a hash of
   // query terms with their values
 
-	// default if no query hash passed in
-	var queryString = '';
+	var queryString = ''; // default if no query hash passed in
+
 	if (typeof(queryHash) !== 'undefined') { // if query hash passed
 		queryString = hashToGET(translateGenQuery(queryHash));
 	}
 
-  var options = {
-    hostname: 'www.eventbriteapi.com',
-		path: '/v3/events/search/?' + queryString + '&token=' + authToken,
-		method: 'GET'
-  };
-
-  var getReq = https.request(options, callback);
-
-	getReq.on('error', function (err) { // for debugging request
-		console.log(err);
-		console.log(url);
+	var GETURL = 'https://www.eventbriteapi.com/v3/events/search?' + queryString +
+			'&token=' + authToken;
+	var GETBody = '';
+	console.log(GETURL);
+	// console.log('making event query req.');
+	https.get(GETURL, function(res) {
+		res.on('data', function(chunk) {
+			GETBody += chunk.toString();
+		});
+		res.on('end', function() {
+			callback(null, GETBody);
+		});
+	}).on('error', function(err) {
+		callback(err);
 	});
-
-  getReq.end();
 };
 
 var translateGenQuery = function(genQuery) {
@@ -40,9 +42,11 @@ var translateGenQuery = function(genQuery) {
 		'location.longitude' : genQuery['lon'],
 		'location.within' : genQuery['radius']/1000 + "km", // in m
 		// need to explicitly specify 'now'
-		'start_date.range_start' : new Date().toUTCString(),
+		// eventbrite doesn't *quite* match Date.toJSON(): YYYY-MM-DDThh:mm:ssZ
+		'start_date.range_start' : new Date().toJSON().slice(0,-5) + 'Z',
 		 // convert from epoch ms to UTC
-		'start_date.range_end' : new Date(genQuery['time_end']).toUTCString()
+		'start_date.range_end' : new Date(
+			genQuery['time_end']).toJSON().slice(0,-5) + 'Z'
 	};
 
 	return(eventbriteQuery);
