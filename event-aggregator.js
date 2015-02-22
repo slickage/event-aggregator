@@ -20,19 +20,28 @@ var eventAggregator = function(queryHash, singleProvider) {
   if (typeof singleProvider !== 'undefined') { // singleProvider case
     eventProviders = [singleProvider];
   }
-  
+
+  // console.log('mapping over providers...');
 	// call each of the query providers brought in with matching configs
-	var eventarr = eventProviders.map(function(thisEventQueryFunc) {
-		agg[thisEventQueryFunc](config['providers'][thisEventQueryFunc]['token'],
-											      function(queriedEvents) {
-															console.log('about to enter submitEvents.');
-															submitEvents(queriedEvents);
-														}, queryHash);
+	var eventArr = [];
+			
+	eventProviders.map(function(thisEventQueryFunc) {
+		agg[thisEventQueryFunc](
+			// signature:
+			// authToken
+			config['providers'][thisEventQueryFunc]['token'],
+			// callback
+			function(queriedEvents) {
+				console.log('about to enter submitEvents.');
+				eventArr.push(submitEvents(queriedEvents));
+			},
+			// event queryHash
+			queryHash
+		);
 	});
 
-	
 	// return total number of events successfully POSTed
-	return(eventarr.reduce(function(x,y) { return(x+y); }));
+	return(eventArr.reduce(function(x,y) { return(x+y); }));
 };
 
 
@@ -70,6 +79,7 @@ var submitEvents = function(eventObj, resultCallback) {
 
 
 var httpsPOSTEvent = function(thisEvent, destURL, resultCallback) {
+	console.log('making POST func');
 	return(function(resultCallback) {
 		var postOptions = {
 			hostname: destURL,
@@ -117,7 +127,7 @@ var submitEventbriteEvents = function(rawEvents) {
 };
 
 var submitMeetupEvents = function(rawEvents) {
-	console.log('submitEventbriteEvents entered.');
+	console.log('submitMeetupEvents entered.');
 	return(rawEvents['results'].map(function(thisEvent) { // this is an array
     // fill a new event object with the spec fields
     var cleanEvent = {};

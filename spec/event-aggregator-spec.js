@@ -97,7 +97,7 @@ describe('main aggregator', function() {
 		spyOn(mainMod, 'httpsPOSTEvent').and.callThrough();
 
 		var eventCount = mainMod.eventAggregator(testQuery);
-
+		console.log('Events POSTed: ' + eventCount);
 		expect(mainMod.httpsPOSTEvent.calls.count()).toBe(eventCount);
 		done(); // TODO check order of this and above line
 	});
