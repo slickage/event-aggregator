@@ -16,8 +16,9 @@ var eventAggregator = function(queryHash, successCallback, providerName) {
 		// STEP 1+2
 		function(nextCallback) {
 //			console.log('entered first step');
-			nextCallback(null,
-									 getEventsFromProviders(eventProviders, config, queryHash));
+			getEventsFromProviders(eventProviders, config,
+														 nextCallback(null, cleanEvents),
+														 queryHash);
 		},
 		// STEP 3
 		function(cleanEvents, nextCallback) {
@@ -57,13 +58,13 @@ var loadConfig = function(filename) {
 
 // STEP 1
 var getEventsFromProviders = function(providerArray, providerConfig,
-																			queryHash) {
+																			cleanCallback, queryHash) {
 	return(providerArray.map(function(thisProvider) {
 		agg[thisProvider](providerConfig['providers'][thisProvider]['token'],
-											// eventHandoff is a callback that gets the HTTP
-											// response data
-											function(resEvents) {
-												return(eventCleaners[thisProvider](resEvents));
+											function(err, resEvents) {
+												if (err) { console.error(err); }
+												cleanCallback(err,
+																			eventCleaners[thisProvider](resEvents));
 											},
 											queryHash);
 	}));
