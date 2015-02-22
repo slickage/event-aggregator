@@ -28,7 +28,7 @@ describe('meetup event fetcher', function() {
 	it('submits an HTML request', function() {
 		spyOn(https, 'request').and.callThrough();
 		
-		getMeetupEvents(token, console.log);
+		getMeetupEvents(token, function() {}); // do-nothing callback
 		
 		expect(https.request).toHaveBeenCalled();
 	});

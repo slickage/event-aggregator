@@ -12,12 +12,6 @@ var getMeetupEvents = function(authToken, callback, queryHash) {
 	if (typeof(queryHash) !== 'undefined') { // if query hash passed
 		queryString = hashToGET(translateGenQuery(queryHash));
 	}
-	
-  var options = {
-    hostname: 'api.meetup.com',
-		path: '/2/open_events.json?' + queryString + '&key=' + authToken,
-		method: 'GET'
-  };
 
 	var GETURL = 'https://api.meetup.com/2/open_events.json?' + queryString +
 			'&key=' + authToken;
