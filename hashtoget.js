@@ -16,4 +16,6 @@ module.exports = function(queryHash) {
 	}).reduce(function(y,z) { 
 		return(y + '&' + z);
 	});
-}
+
+	return(queryString);
+};

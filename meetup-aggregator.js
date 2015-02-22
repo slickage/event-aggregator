@@ -19,14 +19,22 @@ var getMeetupEvents = function(authToken, callback, queryHash) {
 		method: 'GET'
   };
 
-  var getReq = https.request(options, callback);
+	var GETURL = 'https://api.meetup.com/2/open_events.json?' + queryString +
+			'&key=' + authToken;
 
-	getReq.on('error', function (err) { // for debugging request
-		console.log(err);
-		console.log(url);
+//	console.log('making event query req.');
+	var GETBody = '';
+	//  var getReq = https.request(options, function(res) {
+	https.get(GETURL, function(res) {
+		res.on('data', function(chunk) {
+			GETBody += chunk.toString();
+		});
+		res.on('end', function() {
+			callback(null, GETBody);
+		});
+	}).on('error', function(err) {
+		callback(err);
 	});
-
-  getReq.end();
 };
 
 var translateGenQuery = function(genQuery) {
@@ -39,7 +47,6 @@ var translateGenQuery = function(genQuery) {
 		// no need to explicitly specify 'from now' as it is default for meetup
 		'time' : "," + genQuery['time_end'] // as epoch
 	};
-
 	return(meetupQuery);
 };
 
