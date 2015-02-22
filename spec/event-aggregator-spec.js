@@ -56,7 +56,7 @@ describe('main aggregator', function() {
 		 function(done) {
 
 			 spyOn(agg,'getEventbriteEvents').and.callThrough();
-			 mainMod.eventAggregator(testQuery, 'getEventbriteEvents');
+			 mainMod.eventAggregator(testQuery, function() {}, 'getEventbriteEvents');
 			 expect(agg.getEventbriteEvents).toHaveBeenCalled();
 			 done();
 	});
@@ -91,7 +91,22 @@ describe('main aggregator', function() {
 		done();
 	});
 
+	it('makes more than zero POST requests', function(done) {
+		var callback = function(resultCount) {
+			expect(resultCount > 0);
+			done();
+		};
+
+		mainMod.eventAggregator(testQuery, callback);
+	});
+	
 	it('makes as many POST requests as there are new events', function(done) {
+		pending('need to find a way to pull the event count out before POST');
+		var callback = function(resultCount) {
+			expect(resultCount > 0);
+			done();
+		};
+		
 		// TODO get number of events found from return value, compare with
 		// https.request.calls.count()
 		spyOn(mainMod, 'httpsPOSTEvent').and.callThrough();
@@ -99,6 +114,5 @@ describe('main aggregator', function() {
 		var eventCount = mainMod.eventAggregator(testQuery);
 		console.log('Events POSTed: ' + eventCount);
 		expect(mainMod.httpsPOSTEvent.calls.count()).toBe(eventCount);
-		done(); // TODO check order of this and above line
 	});
 });
