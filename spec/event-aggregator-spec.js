@@ -11,7 +11,7 @@ describe('main aggregator', function() {
 		'lat' : 21.33,
 		'lon' : 157.94,
 		'radius' : 10000, // 10km
-		'time' : new Date().valueOf()
+		'time_end' : new Date().valueOf()
 	};
 	
 	beforeEach(function() { // change timeout interval for async calls

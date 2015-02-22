@@ -25,7 +25,8 @@ var eventAggregator = function(queryHash, singleProvider) {
 	var eventarr = eventProviders.map(function(thisEventQueryFunc) {
 		agg[thisEventQueryFunc](config['providers'][thisEventQueryFunc]['token'],
 											      function(queriedEvents) {
-															submitEvents(queriedEvents, successCallback);
+															console.log('about to enter submitEvents.');
+															submitEvents(queriedEvents);
 														}, queryHash);
 	});
 
@@ -38,7 +39,7 @@ var eventAggregator = function(queryHash, singleProvider) {
 
 // our callback for sending event results through the hnl.io API
 var submitEvents = function(eventObj, resultCallback) {
-
+	console.log('submitEvents entered');
 	var submitBatch = []; // list of event submissions to run all at once
 
 	// simplify events
@@ -94,6 +95,7 @@ var httpsPOSTEvent = function(thisEvent, destURL, resultCallback) {
 // functions for simplifying event provider returns so they meet spec and then
 // passing them on to POSTEvents
 var submitEventbriteEvents = function(rawEvents) {
+	console.log('submitEventbriteEvents entered.');
   var eventList =
       rawEvents['events'].map(function(thisEvent) { // this is an array
           // fill a new event object with the spec fields
@@ -115,7 +117,8 @@ var submitEventbriteEvents = function(rawEvents) {
 };
 
 var submitMeetupEvents = function(rawEvents) {
-  return(rawEvents['results'].map(function(thisEvent) { // this is an array
+	console.log('submitEventbriteEvents entered.');
+	return(rawEvents['results'].map(function(thisEvent) { // this is an array
     // fill a new event object with the spec fields
     var cleanEvent = {};
 
