@@ -45,7 +45,10 @@ var eventAggregator = function(queryHash, successCallback, providerName) {
 											 // STEP 5
 											 successCallback(POSTResults.length);
 										 }}));
-		}]);
+		}
+  ], function(err, result) {
+    if(err) { console.error(err); }
+  });
 };
 
 var loadConfig = function(filename) {
@@ -70,6 +73,7 @@ var getEventsFromProviders = function(providerArray, providerConfig,
 												if (err) { console.error(err); }
 												// go straight to cleaning up received events since we
 												// have the provider matching info here
+
 												cleanCallback(err,
 																			eventCleaners[thisProvider](resEvents));
 											},
@@ -80,6 +84,9 @@ var getEventsFromProviders = function(providerArray, providerConfig,
 // STEP 2
 var eventCleaners = { // functions that sanitize received events
 	getEventbriteEvents : function(rawEvents) {
+    if(rawEvents.length < 1) {
+      throw "NOEVENTS";
+    }
 		var eventArray = // this becomes an array of cleaned event objects
 				rawEvents['events'].map(function(thisEvent) {
 					// fill a new event object with the spec fields
@@ -99,6 +106,9 @@ var eventCleaners = { // functions that sanitize received events
 		return(eventArray);
 	},
 	getMeetupEvents : function(rawEvents) {
+    if(rawEvents.length < 1) {
+      throw "NOEVENTS";
+    }
 		var eventArray = 
 				rawEvents['results'].map(function(thisEvent) { // this is an array
 						// fill a new event object with the spec fields
