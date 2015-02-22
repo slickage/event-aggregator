@@ -1,6 +1,7 @@
 // main aggregation function
 var https = require('https');
 var fs = require('fs');
+var async = require('async');
 var agg = require('./eventprovidermodules.js'); // query providers
 
 var eventAggregator = function(queryHash, singleProvider) {
@@ -26,7 +27,6 @@ var eventAggregator = function(queryHash, singleProvider) {
 											      function(queriedEvents) {
 															submitEvents(queriedEvents, successCallback);
 														}, queryHash);
-		// need to do some callback counting above
 	});
 
 	
@@ -39,24 +39,56 @@ var eventAggregator = function(queryHash, singleProvider) {
 // our callback for sending event results through the hnl.io API
 var submitEvents = function(eventObj, resultCallback) {
 
+	var submitBatch = []; // list of event submissions to run all at once
+
 	// simplify events
 	// TODO make more general, simple (hash)
 	switch(submitEvents.caller.name) {
 		// we know how to simplify because we know which provider the callback was
 		// passed to
 	case 'getEventbriteEvents' :
-		var eventList = submitEventbriteEvents(eventObj);
+		submitBatch.push(submitEventbriteEvents(eventObj));
 		break;
 
 	case 'getMeetupEvents' :
-		var eventList = submitMeetupEvents(eventObj);
+		submitBatch.push(submitMeetupEvents(eventObj));
 		break;
 		
   }
 
+	// get each of them ready to submit
+	submitBatch = submitBatch.map(function(thisEvent) {
+		return(httpsPOSTEvent(thisEvent, config.api_url, resultCallback));
+	});
+
   // send the event list to hnl.io
-  // pass array of objects to POST
-  POSTEvents(eventList, config.api_url, resultCallback);
+  async.parallel(submitBatch, resultCallback);
+								 
+	// POSTEvents(eventList, config.api_url, resultCallback);
+};
+
+
+var httpsPOSTEvent = function(thisEvent, destURL, resultCallback) {
+	return(function(resultCallback) {
+		var postOptions = {
+			hostname: destURL,
+			port: 443,
+			path: '/',
+			method: 'POST'
+		};
+		
+		// Set up the request
+		var postReq = http.request(post_opts, function(res) {
+			res.setEncoding('utf8');
+			res.on('data', function (chunk) {
+				console.log('Response: ' + chunk);
+			});
+		});
+		
+		// actually send the data
+		// postReq.write(eventList[thisEvent]);
+		postReq.end(thisEvent, null, resultCallback);
+	});
 };
 
 // functions for simplifying event provider returns so they meet spec and then
@@ -101,40 +133,11 @@ var submitMeetupEvents = function(rawEvents) {
 	}));
 };
 
-var POSTEvents = function(eventList, apiURL, resultCallback) {
-
-	eventList.foreach(function(thisEvent) {
-		httpsPOSTEvent(thisEvent, apiURL, resultCallback);
-	});
-	
-};
-
-var httpsPOSTEvent = function(thisEvent, destURL, resultCallback) {
-  var postOptions = {
-    hostname: destURL,
-    port: 443,
-    path: '/',
-    method: 'POST'
-  };
-	
-	// Set up the request
-  var postReq = http.request(post_opts, function(res) {
-    res.setEncoding('utf8');
-    res.on('data', function (chunk) {
-      console.log('Response: ' + chunk);
-    });
-  });
-  
-  // post the data
-  // postReq.write(eventList[thisEvent]);
-  postReq.end(thisEvent, null, resultCallback);
-};
-
-
 // callback for reporting successful POST
 var successCallback = function(callData) {
 	console.log(callData);
 	if (callData) {
+		console.log(1);
 		return 1;
 	} else {
 		return 0;
