@@ -17,7 +17,9 @@ var eventAggregator = function(queryHash, successCallback, providerName) {
 		function(nextCallback) {
 //			console.log('entered first step');
 			getEventsFromProviders(eventProviders, config,
-														 nextCallback(null, cleanEvents),
+														 function(err, cleanEvents) {
+															 nextCallback(null, cleanEvents);
+														 },
 														 queryHash);
 		},
 		// STEP 3
@@ -63,6 +65,8 @@ var getEventsFromProviders = function(providerArray, providerConfig,
 		agg[thisProvider](providerConfig['providers'][thisProvider]['token'],
 											function(err, resEvents) {
 												if (err) { console.error(err); }
+												// go straight to cleaning up received events since we
+												// have the provider matching info here
 												cleanCallback(err,
 																			eventCleaners[thisProvider](resEvents));
 											},

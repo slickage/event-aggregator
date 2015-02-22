@@ -45,7 +45,7 @@ describe('main aggregator', function() {
 		spyOn(agg,'getEventbriteEvents').and.callThrough();
 		spyOn(agg,'getMeetupEvents').and.callThrough();
 
-		mainMod.eventAggregator();
+		mainMod.eventAggregator(testQuery);
 
 		expect(agg.getEventbriteEvents).toHaveBeenCalled();
 		expect(agg.getMeetupEvents).toHaveBeenCalled();
