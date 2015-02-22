@@ -20,7 +20,7 @@ var getEventbriteEvents = function(authToken, callback, queryHash) {
 	var GETURL = 'https://www.eventbriteapi.com/v3/events/search?' + queryString +
 			'&token=' + authToken;
 	var GETBody = '';
-	console.log(GETURL);
+
 	// console.log('making event query req.');
 	https.get(GETURL, function(res) {
 		res.on('data', function(chunk) {
