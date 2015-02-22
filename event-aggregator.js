@@ -134,14 +134,12 @@ var submitMeetupEvents = function(rawEvents) {
 };
 
 // callback for reporting successful POST
-var successCallback = function(callData) {
-	console.log(callData);
-	if (callData) {
-		console.log(1);
-		return 1;
-	} else {
+var successCallback = function(err, callData) {
+	if (err) {
+		console.error(err);
 		return 0;
 	}
+		return 1;
 };
 
 module.exports = {
