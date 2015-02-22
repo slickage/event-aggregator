@@ -4,12 +4,8 @@ var fs = require('fs');
 var async = require('async');
 var agg = require('./eventprovidermodules.js'); // query providers
 
-var eventAggregator = function(queryHash, providerName) {
+var eventAggregator = function(queryHash, successCallback, providerName) {
 	var config = loadConfig('./config.json');
-
-	// result variables (we cap callback/async madness here)
-	var areWeDoneYet = false; // MOM ARE WE THERE YET
-	var eventsPOSTed = 0;
 	
 	var eventProviders = Object.keys(agg);
 	if (typeof singleProvider !== 'undefined') { // singleProvider case
@@ -19,11 +15,13 @@ var eventAggregator = function(queryHash, providerName) {
 	async.waterfall([
 		// STEP 1+2
 		function(nextCallback) {
+			console.log('entered first step');
 			nextCallback(null,
 									 getEventsFromProviders(eventProviders, config, queryHash));
 		},
 		// STEP 3
 		function(cleanEvents, nextCallback) {
+			console.log('entered third step');
 			nextCallback(null,
 									 buildPOSTRequests(cleanEvents, config.api_url,
 																		 function(thisReqRes) {
@@ -32,20 +30,16 @@ var eventAggregator = function(queryHash, providerName) {
 		},
 		// STEP 4
 		function(POSTArr, nextCallback) {
+			console.log('entered fourth step');
 			nextCallback(null,
 									 async.parallel(POSTArray, function(err, POSTResults) {
 										 if (err) {
 											 console.log(err);
 										 } else {
 											 // STEP 5
-											 eventsPOSTed = POSTResults.length;
-											 areWeDoneYet = true;
+											 successCallback(POSTResults.length);
 										 }}));
 		}]);
-
-	while (areWeDoneYet === false) {} // block until above waterfall finished
-
-	return(eventsPOSTed); // once waterfall finished, this is useful
 };
 
 var loadConfig = function(filename) {
@@ -65,11 +59,11 @@ var loadConfig = function(filename) {
 var getEventsFromProviders = function(providerArray, providerConfig,
 																			queryHash) {
 	return(providerArray.map(function(thisProvider) {
-		providerArray[thisProvider](config['providers'][thisEventQueryFunc]['token'],
+		providerArray[thisProvider](providerConfig['providers'][thisProvider]['token'],
 																// eventHandoff is a callback that gets the HTTP
 																// response data
 																function(resEvents) {
-																	return(eventCleaners[thisEventQueryFunc](resEvents));
+																	return(eventCleaners[thisProvider](resEvents));
 																},
 																queryHash);
 	}));
