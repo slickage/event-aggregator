@@ -15,22 +15,22 @@ var eventAggregator = function(queryHash, successCallback, providerName) {
 	async.waterfall([
 		// STEP 1+2
 		function(nextCallback) {
-			console.log('entered first step');
+//			console.log('entered first step');
 			nextCallback(null,
 									 getEventsFromProviders(eventProviders, config, queryHash));
 		},
 		// STEP 3
 		function(cleanEvents, nextCallback) {
-			console.log('entered third step');
-			nextCallback(null,
-									 buildPOSTRequests(cleanEvents, config.api_url,
-																		 function(thisReqRes) {
-																			 return(thisReqRes);
-																		 }));
+//			console.log('entered third step');
+			buildPOSTRequests(cleanEvents, config.api_url,
+												function(thisReqRes) {
+													nextCallback(null,thisReqRes);
+												});
 		},
 		// STEP 4
-		function(POSTArr, nextCallback) {
-			console.log('entered fourth step');
+		function(POSTArray, nextCallback) {
+//			console.log('entered fourth step');
+			console.log(POSTArray);
 			nextCallback(null,
 									 async.parallel(POSTArray, function(err, POSTResults) {
 										 if (err) {
@@ -59,13 +59,13 @@ var loadConfig = function(filename) {
 var getEventsFromProviders = function(providerArray, providerConfig,
 																			queryHash) {
 	return(providerArray.map(function(thisProvider) {
-		providerArray[thisProvider](providerConfig['providers'][thisProvider]['token'],
-																// eventHandoff is a callback that gets the HTTP
-																// response data
-																function(resEvents) {
-																	return(eventCleaners[thisProvider](resEvents));
-																},
-																queryHash);
+		agg[thisProvider](providerConfig['providers'][thisProvider]['token'],
+											// eventHandoff is a callback that gets the HTTP
+											// response data
+											function(resEvents) {
+												return(eventCleaners[thisProvider](resEvents));
+											},
+											queryHash);
 	}));
 };
 
