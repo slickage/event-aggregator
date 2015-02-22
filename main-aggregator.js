@@ -13,7 +13,7 @@ var eventAggregator = function(queryHash, providerName) {
 	async.waterfall([
 		function(nextCallback) { // go get events
 			nextCallback(null,
-									 getEventsFromProviders(agg, config, queryHash, cleanEvents));
+									 getEventsFromProviders(agg, config, queryHash, httpCallback));
 		},
 		function(eventsList, nextCallback) { // build http requests
 			nextCallback(null,
@@ -25,6 +25,7 @@ var eventAggregator = function(queryHash, providerName) {
 									 if (err) {
 										 console.log(err);
 									 } else {
+										 // STEP 5
 										 eventsPOSTed = POSTResults.length;
 										 areWeDoneYet = true;
 									 }}));
@@ -48,12 +49,93 @@ var loadConfig = function(filename) {
 	}
 };
 
+// STEP 1
 var getEventsFromProviders = function(providerArray, providerConfig, queryHash,
 																			eventHandOff) {
 	return(providerArray.map(function(thisProvider) {
 		providerArray[thisProvider](config['providers'][thisEventQueryFunc]['token'],
-																handOff, // handOff gets the HTTP response data
+																// handOff is a callback that gets the HTTP
+																// response data
+																handOff,
 																queryHash);
 	}));
 };
 
+// STEP 2
+var eventCleaners = { // functions that sanitize received events
+	getEventbriteEvents : function(rawEvents) {
+		var eventArray = // this becomes an array of cleaned event objects
+				rawEvents['events'].map(function(thisEvent) {
+					// fill a new event object with the spec fields
+					var cleanEvent = {};
+					
+					cleanEvent['title'] = thisEvent['name']['text'];
+					cleanEvent['body'] = thisEvent['description']['text'];
+					cleanEvent['start'] = thisEvent['start']['utc']; // TODO convert to unix ms
+					cleanEvent['end'] = thisEvent['end']['utc']; // TODO convert to unix ms
+					cleanEvent['created_at'] = thisEvent['created']; // TODO convert to unix ms
+					cleanEvent['updated_at'] = thisEvent['changed'];
+					cleanEvent['imported'] = {
+						"resource_url" : thisEvent['resource_uri'],
+						"service" : 'Eventbrite'
+					};
+				});
+		return(eventArray);
+	},
+	getMeetupEvents : function(rawEvents) {
+		var eventArray = 
+				rawEvents['results'].map(function(thisEvent) { // this is an array
+						// fill a new event object with the spec fields
+						var cleanEvent = {};
+					
+					cleanEvent['title'] = thisEvent['name'];
+					cleanEvent['body'] = thisEvent['description']; // TODO strip HTML?
+					cleanEvent['start'] = thisEvent['time']; // TODO check if unix epoch ms
+					cleanEvent['end'] = thisEvent['time'] + thisEvent['duration']; // TODO
+					cleanEvent['created_at'] = thisEvent['created']; // TODO
+					cleanEvent['updated_at'] = thisEvent['updated']; // TODO
+					cleanEvent['imported'] = {
+						"resource_url" : thisEvent['event_url'],
+						"service" : 'Meetup'
+					};
+					
+				});
+		return(eventArray);
+	}
+};
+
+// STEP 3
+var buildPOSTRequests = function(eventList, destURL, resultCallback) {
+	eventList.map(function(thisEvent) {
+		httpsPOSTEvent(thisEvent, destURL, resultCallback);
+	});
+};
+
+var httpsPOSTEvent = function(thisEvent, destURL, resultCallback) {
+	console.log('making POST func');
+	return(function(resultCallback) {
+		var postOptions = {
+			hostname: destURL,
+			port: 443,
+			path: '/',
+			method: 'POST'
+		};
+
+		// var POSTResponse = '';
+		// Set up the request
+		var postReq = http.request(postOptions, function(res) {
+
+			res.setEncoding('utf8');
+			res.on('data', function (chunk) {
+				// POSTResponse += chunk.toString();
+				console.log('Response: ' + chunk);
+			});
+		}).on('error', function(err) {
+			resultCallback(err);
+		});
+		
+		// actually send the data
+		// postReq.write(eventList[thisEvent]);
+		postReq.end(thisEvent, 'utf8', resultCallback);
+	});
+};
