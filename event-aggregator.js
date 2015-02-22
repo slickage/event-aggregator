@@ -10,12 +10,17 @@ var eventAggregator = function(queryHash, providerName) {
 	// result variables (we cap callback/async madness here)
 	var areWeDoneYet = false; // MOM ARE WE THERE YET
 	var eventsPOSTed = 0;
+	
+	var eventProviders = Object.keys(agg);
+	if (typeof singleProvider !== 'undefined') { // singleProvider case
+		eventProviders = [singleProvider];
+	}
 
 	async.waterfall([
 		// STEP 1+2
 		function(nextCallback) {
 			nextCallback(null,
-									 getEventsFromProviders(agg, config, queryHash));
+									 getEventsFromProviders(eventProviders, config, queryHash));
 		},
 		// STEP 3
 		function(cleanEvents, nextCallback) {
