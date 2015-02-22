@@ -9,31 +9,37 @@ var eventAggregator = function(queryHash, providerName) {
 
 	var areWeDoneYet = false; // MOM ARE WE THERE YET
 	var eventsPOSTed = 0;
-	
-	async.waterfall([
-		function(nextCallback) { // go get events
-			nextCallback(null,
-									 getEventsFromProviders(agg, config, queryHash, httpCallback));
-		},
-		function(eventsList, nextCallback) { // build http requests
-			nextCallback(null,
-									 buildPOSTSFromEvents(eventsList));
-		}
-	], function(POSTArray, nextCallback) { // finally, fire away all requests
-		nextCallback(null,
-								 async.parallel(POSTArray, function(err, POSTResults) {
-									 if (err) {
-										 console.log(err);
-									 } else {
-										 // STEP 5
-										 eventsPOSTed = POSTResults.length;
-										 areWeDoneYet = true;
-									 }}));
-	});
 
-	
-	while (areWeDoneYet === false) {} // block until finished requesting
-	return (eventsPOSTed);
+	async.waterfall([
+		// STEP 1+2
+		function(nextCallback) {
+			nextCallback(null,
+									 getEventsFromProviders(agg, config, queryHash));
+		},
+		// STEP 3
+		function(cleanEvents, nextCallback) {
+			nextCallback(null,
+									 buildPOSTRequests(cleanEvents, config.api_url,
+																		 function(thisReqRes) {
+																			 return(thisReqRes);
+																		 }));
+		},
+		// STEP 4
+		function(POSTArr, nextCallback) {
+			nextCallback(null,
+									 async.parallel(POSTArray, function(err, POSTResults) {
+										 if (err) {
+											 console.log(err);
+										 } else {
+											 // STEP 5
+											 eventsPOSTed = POSTResults.length;
+											 areWeDoneYet = true;
+										 }}));
+		}]);
+
+	while (areWeDoneYet === false) {} // block until above waterfall finished
+
+	return(eventsPOSTed); // once waterfall finished, this is useful
 };
 
 var loadConfig = function(filename) {
@@ -50,13 +56,15 @@ var loadConfig = function(filename) {
 };
 
 // STEP 1
-var getEventsFromProviders = function(providerArray, providerConfig, queryHash,
-																			eventHandOff) {
+var getEventsFromProviders = function(providerArray, providerConfig,
+																			queryHash) {
 	return(providerArray.map(function(thisProvider) {
 		providerArray[thisProvider](config['providers'][thisEventQueryFunc]['token'],
-																// handOff is a callback that gets the HTTP
+																// eventHandoff is a callback that gets the HTTP
 																// response data
-																handOff,
+																function(resEvents) {
+																	return(eventCleaners[thisEventQueryFunc](resEvents));
+																},
 																queryHash);
 	}));
 };
@@ -107,7 +115,7 @@ var eventCleaners = { // functions that sanitize received events
 // STEP 3
 var buildPOSTRequests = function(eventList, destURL, resultCallback) {
 	eventList.map(function(thisEvent) {
-		httpsPOSTEvent(thisEvent, destURL, resultCallback);
+			return(httpsPOSTEvent(thisEvent, destURL, resultCallback));
 	});
 };
 
