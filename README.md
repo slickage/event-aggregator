@@ -48,4 +48,6 @@ The main function, `event-aggregator`, goes through the following steps (using
 - [ ] Universal event query generator/parser
   - [ ] Tests
   - [ ] Implementation
+	- [x] Aggregation steps
+	- [ ] error handling
   - [ ] Docs
