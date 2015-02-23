@@ -4,11 +4,12 @@ describe('meetup event fetcher', function() {
 	var token = '1f2239571b3a4d192f505f185b407935';
 
 	// add test query var
-	var testQuery = { // honolulu airport
-		'lat' : 21.33,
-		'lon' : 157.94,
+	var testQuery = { // MIC
+		'lat' : 21.308689,
+		'lon' : -157.808457,
 		'radius' : 10000, // 10km
-		'time_end' : new Date().valueOf()
+		'time_end' : new Date().setTime( new Date().getTime() +
+                                     '14' * 86400000 ).valueOf() // 2 weeks
 	};
 	
 	beforeEach(function() { // change timeout interval
@@ -57,6 +58,7 @@ describe('meetup event fetcher', function() {
 			expect(dataStr !== null); // expect data back
 			if (dataStr) {
 				var queryReturn = JSON.parse(dataStr);
+//        console.log(dataStr);
 				expect(Array.isArray(queryReturn.results));
 			}
 			done();

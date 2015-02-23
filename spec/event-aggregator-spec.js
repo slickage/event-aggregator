@@ -7,11 +7,12 @@ describe('main aggregator', function() {
 	var config = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
 
 	// add test query var
-	var testQuery = { // honolulu airport
-		'lat' : 21.33,
-		'lon' : 157.94,
+	var testQuery = { // MIC
+		'lat' : 21.308689,
+		'lon' : -157.808457,
 		'radius' : 10000, // 10km
-		'time_end' : new Date().valueOf()
+		'time_end' : new Date().setTime( new Date().getTime() +
+                                     '14' * 86400000 ).valueOf() // 2 weeks
 	};
 	
 	beforeEach(function() { // change timeout interval for async calls
@@ -91,7 +92,7 @@ describe('main aggregator', function() {
 		done();
 	});
 
-	it('makes more than zero POST requests', function(done) {
+	fit('makes more than zero POST requests', function(done) {
 		var callback = function(resultCount) {
 			expect(resultCount > 0);
 			done();

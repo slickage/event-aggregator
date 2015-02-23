@@ -1,13 +1,14 @@
 describe('eventbrite event fetcher', function() {
 	var https = require('https');
 	var getEventbriteEvents = require('../eventbrite-aggregator.js');
- 	var token = '5OTKXGRDYWFRA2SWONXT';
+ 	var token = 'HEURTPEMT2UVES6RTO';
 
-	var testQuery = { // honolulu airport
-		'lat' : 21.33,
-		'lon' : 157.94,
+	var testQuery = { // MIC
+		'lat' : 21.308689,
+		'lon' : -157.808457,
 		'radius' : 10000, // 10km
-		'time_end' : new Date().valueOf()
+		'time_end' : new Date().setTime( new Date().getTime() +
+                                     '14' * 86400000 ).valueOf() // 2 weeks
 	};
 	
 	beforeEach(function() { // change timeout interval for async calls
@@ -56,7 +57,6 @@ describe('eventbrite event fetcher', function() {
 			console.log(dataStr);
 			if (dataStr) {
 				var queryReturn = JSON.parse(dataStr);
-				console.log(queryReturn);
 				expect(Array.isArray(queryReturn.events));
 			}
 			done();

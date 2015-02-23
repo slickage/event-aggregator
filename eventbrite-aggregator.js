@@ -16,9 +16,8 @@ var getEventbriteEvents = function(authToken, callback, queryHash) {
 	if (typeof(queryHash) !== 'undefined') { // if query hash passed
 		queryString = hashToGET(translateGenQuery(queryHash));
 	}
-
-	var GETURL = 'https://www.eventbriteapi.com/v3/events/search?' + queryString +
-			'&token=' + authToken;
+	var GETURL = 'https://www.eventbrite.com/json/event_search?' + queryString +
+			'&app_key=' + authToken;
 	var GETBody = '';
 
 	// console.log('making event query req.');
@@ -27,6 +26,7 @@ var getEventbriteEvents = function(authToken, callback, queryHash) {
 			GETBody += chunk.toString();
 		});
 		res.on('end', function() {
+      console.log('EB: ' + res.statusCode);
 			callback(null, GETBody);
 		});
 	}).on('error', function(err) {

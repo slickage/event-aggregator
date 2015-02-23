@@ -16,7 +16,7 @@ var getMeetupEvents = function(authToken, callback, queryHash) {
 	var GETURL = 'https://api.meetup.com/2/open_events.json?' + queryString +
 			'&key=' + authToken;
 
-//	console.log('making event query req.');
+  //	console.log('making event query req.');
 	var GETBody = '';
 	//  var getReq = https.request(options, function(res) {
 	https.get(GETURL, function(res) {
@@ -24,6 +24,7 @@ var getMeetupEvents = function(authToken, callback, queryHash) {
 			GETBody += chunk.toString();
 		});
 		res.on('end', function() {
+      console.log('MU: ' + res.statusCode);
 			callback(null, GETBody);
 		});
 	}).on('error', function(err) {

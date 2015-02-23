@@ -2,10 +2,10 @@
 	"api_url" : "https://hnl.io/api",
   "providers" : {
 	  "getEventbriteEvents" : {
-		  "token" : "5OTKXGRDYWFRA2SWONXT"
+      "token" : "HEURTPEMT2UVES6RTO"
 	  },
 	  "getMeetupEvents" : {
-		  "token" : "1f2239571b3a4d192f505f185b407935"
-	  }
+      "token" : "1f2239571b3a4d192f505f185b407935"
+ 	  }
   }
 }
