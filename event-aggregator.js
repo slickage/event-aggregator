@@ -67,18 +67,18 @@ var loadConfig = function(filename) {
 // STEP 1
 var getEventsFromProviders = function(providerArray, providerConfig,
 																			cleanCallback, queryHash) {
-	return(providerArray.map(function(thisProvider) {
+  
+	providerArray.map(function(thisProvider) {
 		agg[thisProvider](providerConfig['providers'][thisProvider]['token'],
 											function(err, resEvents) {
 												if (err) { console.error(err); }
 												// go straight to cleaning up received events since we
 												// have the provider matching info here
-
 												cleanCallback(err,
 																			eventCleaners[thisProvider](resEvents));
 											},
 											queryHash);
-	}));
+	});
 };
 
 // STEP 2
