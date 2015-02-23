@@ -154,7 +154,6 @@ var buildPOSTRequests = function(eventList, destURL, resultCallback,
 };
 
 var httpsPOSTEvent = function(thisEvent, destURL, resultCallback) {
-	console.log('making POST func');
 	return(function(resultCallback) {
 		var postOptions = {
 			hostname: destURL,
