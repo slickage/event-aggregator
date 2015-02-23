@@ -67,18 +67,28 @@ var loadConfig = function(filename) {
 // STEP 1
 var getEventsFromProviders = function(providerArray, providerConfig,
 																			cleanCallback, queryHash) {
+  // three things happening here:
+  // 1: asynchronous query of events for each provider
+  // 2: cleaning of each event
+  // 3: callback passed in to operate on cleaned events list (sig: (err, list))
+
+  // function for 2
+  var itemCallback = function(err, dirtyItem) {
+    if (err) { console.error(err); }
+    eventCleaners[thisProvider](dirtyItem);
+  };
   
-	providerArray.map(function(thisProvider) {
+	async.map(providerArray, function(thisProvider, itemCallback) {
+    // 1: query of events
 		agg[thisProvider](providerConfig['providers'][thisProvider]['token'],
 											function(err, resEvents) {
 												if (err) { console.error(err); }
-												// go straight to cleaning up received events since we
-												// have the provider matching info here
-												cleanCallback(err,
-																			eventCleaners[thisProvider](resEvents));
+                        // 2: cleaning
+                        // console.log(resEvents);
+                        itemCallback(err, eventCleaners[thisProvider](resEvents));
 											},
 											queryHash);
-	});
+	}, cleanCallback); // 3: external callback
 };
 
 // STEP 2
@@ -87,19 +97,24 @@ var eventCleaners = { // functions that sanitize received events
     if(rawEvents.length < 1) {
       throw "NOEVENTS";
     }
+    // this extra work is necessary because eventbrite doesn't seem to obey its
+    // own docs for returning events
+    var rawEventsArr = JSON.parse(rawEvents)['events'].slice(1);
+    
 		var eventArray = // this becomes an array of cleaned event objects
-				rawEvents['events'].map(function(thisEvent) {
+				rawEventsArr.map(function(thisEvent) {
+          thisEvent = thisEvent['event'];
+ //         console.log(Object.keys(thisEvent));
 					// fill a new event object with the spec fields
 					var cleanEvent = {};
-					
-					cleanEvent['title'] = thisEvent['name']['text'];
-					cleanEvent['body'] = thisEvent['description']['text'];
-					cleanEvent['start'] = thisEvent['start']['utc']; // TODO convert to unix ms
-					cleanEvent['end'] = thisEvent['end']['utc']; // TODO convert to unix ms
+					cleanEvent['title'] = thisEvent['title'];
+					cleanEvent['body'] = thisEvent['description'];
+					cleanEvent['start'] = thisEvent['start_date']; // TODO convert to unix ms
+					cleanEvent['end'] = thisEvent['end_date']; // TODO convert to unix ms
 					cleanEvent['created_at'] = thisEvent['created']; // TODO convert to unix ms
-					cleanEvent['updated_at'] = thisEvent['changed'];
+					cleanEvent['updated_at'] = thisEvent['modified'];
 					cleanEvent['imported'] = {
-						"resource_url" : thisEvent['resource_uri'],
+						"resource_url" : thisEvent['url'],
 						"service" : 'Eventbrite'
 					};
 				});
@@ -110,7 +125,7 @@ var eventCleaners = { // functions that sanitize received events
       throw "NOEVENTS";
     }
 		var eventArray = 
-				rawEvents['results'].map(function(thisEvent) { // this is an array
+				JSON.parse(rawEvents)['results'].map(function(thisEvent) { // this is an array
 						// fill a new event object with the spec fields
 						var cleanEvent = {};
 					
