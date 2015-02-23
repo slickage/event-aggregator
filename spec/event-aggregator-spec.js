@@ -17,7 +17,7 @@ describe('main aggregator', function() {
 	
 	beforeEach(function() { // change timeout interval for async calls
     originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 20000;
 
   });	
 
