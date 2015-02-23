@@ -84,7 +84,8 @@ var getEventsFromProviders = function(providerArray, providerConfig,
 											function(err, resEvents) {
 												if (err) { console.error(err); }
                         // 2: cleaning
-                        // console.log(resEvents);
+                        console.log(thisProvider + " query response length: " +
+                                    resEvents.length);
                         itemCallback(err, eventCleaners[thisProvider](resEvents));
 											},
 											queryHash);
@@ -94,12 +95,12 @@ var getEventsFromProviders = function(providerArray, providerConfig,
 // STEP 2
 var eventCleaners = { // functions that sanitize received events
 	getEventbriteEvents : function(rawEvents) {
-    if(rawEvents.length < 1) {
-      throw "NOEVENTS";
-    }
     // this extra work is necessary because eventbrite doesn't seem to obey its
     // own docs for returning events
     var rawEventsArr = JSON.parse(rawEvents)['events'].slice(1);
+    if(typeof(rawEventsArr) === 'undefined' || rawEventsArr.length < 1) {
+      throw "NOEVENTS";
+    }
     
 		var eventArray = // this becomes an array of cleaned event objects
 				rawEventsArr.map(function(thisEvent) {
@@ -121,11 +122,13 @@ var eventCleaners = { // functions that sanitize received events
 		return(eventArray);
 	},
 	getMeetupEvents : function(rawEvents) {
-    if(rawEvents.length < 1) {
+    console.log(rawEvents);
+    var rawEventsArr = JSON.parse(rawEvents)['results'];
+    if(typeof(rawEventsArr) === 'undefined' || rawEventsArr.length < 1) {
       throw "NOEVENTS";
     }
 		var eventArray = 
-				JSON.parse(rawEvents)['results'].map(function(thisEvent) { // this is an array
+				rawEventsArr.map(function(thisEvent) { // this is an array
 						// fill a new event object with the spec fields
 						var cleanEvent = {};
 					
