@@ -15,6 +15,11 @@
     "lodash": "^3.3.0"
   },
   "devDependencies": {
-    "jasmine": "^2.2.1"
+    "jasmine": "^2.2.1",
+    "chai": "~2.1.2",
+    "sinon": "~1.14.1",
+    "sinon-chai": "~2.7.0",
+    "mocha": "~2.2.1",
+    "mocha-sinon": "~1.1.4"
   }
 }
