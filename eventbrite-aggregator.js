@@ -7,7 +7,6 @@ var https = require('https');
 var hashToGET = require('./hashtoget.js');
 
 var getEventbriteEvents = function(authToken, callback, queryHash) {
-//	console.log('getEventbriteEvents entered.');
   // function expects a base url, a token for the request auth, and a hash of
   // query terms with their values
 
@@ -19,15 +18,18 @@ var getEventbriteEvents = function(authToken, callback, queryHash) {
 
 	var GETURL = 'https://www.eventbriteapi.com/v3/events/search?' + queryString +
 			'&token=' + authToken;
-	var GETBody = '';
+  console.log(GETURL);
 
-	// console.log('making event query req.');
+  var GETBody = '';
 	https.get(GETURL, function(res) {
 		res.on('data', function(chunk) {
 			GETBody += chunk.toString();
 		});
 		res.on('end', function() {
-			callback(null, GETBody);
+      console.log(res.statusCode);
+      console.log(GETBody);
+      // pass complete response body to data munger      
+			callback(null, cleanEvents(GETBody));
 		});
 	}).on('error', function(err) {
 		callback(err);
@@ -50,6 +52,41 @@ var translateGenQuery = function(genQuery) {
 	};
 
 	return(eventbriteQuery);
+};
+
+var cleanEvents = function(rawEvents) {
+  console.log('raw eventbrite events: ');
+  console.log(rawEvents);
+  
+  var eventbriteEvents = JSON.parse(rawEvents);
+  // console.log(eventbriteEvents.hasOwnProperty('results'));
+  if (!(eventbriteEvents.hasOwnProperty('events'))) {
+    // eventbrite doesn't complain out loud if we give a bad request, but we can
+    // guess
+    throw new Error('Bad request');
+  }
+  if (eventbriteEvents.events.length === 0) {
+    // empty array case, i.e. no events
+    return([]);
+  }
+  
+	var eventArray = // this becomes an array of cleaned event objects
+			eventbriteEvents.events.map(function(thisEvent) {
+				// fill a new event object with the spec fields
+				var cleanEvent = {};
+				
+				cleanEvent.title = thisEvent.name.texrt;
+				cleanEvent.body = thisEvent.description.text;
+				cleanEvent.start = thisEvent.start.utc; // TODO convert to unix ms
+				cleanEvent.end = thisEvent.end.utc; // TODO convert to unix ms
+				cleanEvent.created_at = thisEvent.created; // TODO convert to unix ms
+				cleanEvent.updated_at = thisEvent.changed;
+				cleanEvent.imported = {
+					"resource_url" : thisEvent.resource_uri,
+					"service" : 'Eventbrite'
+				};
+			});
+	return(eventArray);
 };
 
 module.exports = getEventbriteEvents;

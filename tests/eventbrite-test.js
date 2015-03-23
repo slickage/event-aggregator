@@ -9,9 +9,9 @@ var token = '5OTKXGRDYWFRA2SWONXT';
 
 var testQuery = { // honolulu airport
 	'lat' : 21.33,
-	'lon' : 157.94,
-	'radius' : 10000, // 10km
-	'time_end' : new Date().valueOf()
+	'lon' : -157.94,
+	'radius' : 50000, // 50km
+	'time_end' : new Date(2015, 11, 31).valueOf()
 };
 
 suite('eventbrite event fetcher', function() {
@@ -31,38 +31,22 @@ suite('eventbrite event fetcher', function() {
 	it('submits an HTML request', function() {
 		sinon.spy(https, 'request');
 
-		getEventbriteEvents(token, function () {});
+		getEventbriteEvents(token, function () {}, testQuery);
 
 		expect(https.request.calledOnce);
 	});
 
-	it('returns a JSON string of valid events', function(done) {
-		var callback = function(err, dataStr) { // function for async data return
-			if (err) console.log(err);
-
-			expect(err).null; // expect no errors
-			expect(dataStr).not.null; // expect data back
-			if (dataStr) {
-				var queryReturn = JSON.parse(dataStr);
-				expect(Array.isArray(queryReturn.events));
-			}
-			done();
-		};
-
-		getEventbriteEvents(token, callback);
-	});
-
 	it('returns valid JSON from a spec-based query', function(done) {
+    this.timeout(15000); // wait 15s for eventbrite API to come back
+    
 		var callback = function(err, dataStr) { // function for async data return
-			if (err) console.log(err);			
+			if (err) console.error(err);			
 
 			expect(err).null; // expect no errors
 			expect(dataStr).not.null; // expect data back
 			console.log(dataStr);
 			if (dataStr) {
-				var queryReturn = JSON.parse(dataStr);
-				console.log(queryReturn);
-				expect(Array.isArray(queryReturn.events));
+				expect(Array.isArray(dataStr));
 			}
 			done();
 		};
