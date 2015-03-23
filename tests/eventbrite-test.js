@@ -44,7 +44,7 @@ suite('eventbrite event fetcher', function() {
 
 			expect(err).null; // expect no errors
 			expect(dataStr).not.null; // expect data back
-			console.log(dataStr);
+			// console.log(dataStr);
 			if (dataStr) {
 				expect(Array.isArray(dataStr));
 			}
