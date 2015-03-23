@@ -3,7 +3,7 @@
 // https://www.eventbriteapi.com/v3/events/search/?token=5OTKXGRDYWFRA2SWONXT
 // API doc:
 // https://developer.eventbrite.com/docs/event-search/
-var https = require('https');
+var https = require('follow-redirects').https;
 var hashToGET = require('./hashtoget.js');
 
 var getEventbriteEvents = function(authToken, callback, queryHash) {
@@ -55,8 +55,7 @@ var translateGenQuery = function(genQuery) {
 };
 
 var cleanEvents = function(rawEvents) {
-  console.log('raw eventbrite events: ');
-  console.log(rawEvents);
+  // console.log('raw eventbrite events: ');
   
   var eventbriteEvents = JSON.parse(rawEvents);
   // console.log(eventbriteEvents.hasOwnProperty('results'));
@@ -75,7 +74,7 @@ var cleanEvents = function(rawEvents) {
 				// fill a new event object with the spec fields
 				var cleanEvent = {};
 				
-				cleanEvent.title = thisEvent.name.texrt;
+				cleanEvent.title = thisEvent.name.text;
 				cleanEvent.body = thisEvent.description.text;
 				cleanEvent.start = thisEvent.start.utc; // TODO convert to unix ms
 				cleanEvent.end = thisEvent.end.utc; // TODO convert to unix ms
