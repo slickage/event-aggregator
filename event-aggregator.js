@@ -22,30 +22,12 @@ var eventAggregator = function(queryHash, successCallback, providerName) {
 														 },
 														 queryHash);
 		},
-		// STEP 2
+    // STEP 2
 		function(cleanEvents, nextCallback) {
-			console.log('entered third step');
-			buildPOSTRequests(cleanEvents, config.api_url,
-												function(thisReqRes) { // callback for individual reqs
-													return(thisReqRes);
-												},
-												function(err, POSTArray) { // callback for whole array
-													nextCallback(null, thisReqRes);
-												});
+			console.log('entered second step');
+			POSTEvents(cleanEvents, config.api_url, successCallback);
 		},
-		// STEP 3
-		function(POSTArray, nextCallback) {
-			console.log('entered fourth step');
-			console.log(POSTArray);
-			nextCallback(null,
-									 async.parallel(POSTArray, function(err, POSTResults) {
-										 if (err) {
-											 console.log(err);
-										 } else {
-											 // STEP 5
-											 successCallback(POSTResults.length);
-										 }}));
-		}]);
+  ]);
 };
 
 var loadConfig = function(filename) {
@@ -77,43 +59,37 @@ var getEventsFromProviders = function(providerArray, providerConfig,
 };
 
 // STEP 2
-var buildPOSTRequests = function(eventList, destURL, resultCallback,
-																arrayCallback) {
-	arrayCallback(null, eventList.map(function(thisEvent) {
-		return(httpsPOSTEvent(thisEvent, destURL, resultCallback));
-	}));
+var POSTEvents = function(eventList, destURL, parallelCallback) {
+  async.parallel(eventList.map(function(thisEvent) {
+    console.log('making POST');
+    return(function(individualCallback) {
+		  var postOptions = {
+			  hostname: destURL,
+			  port: 443,
+			  path: '/',
+			  method: 'POST'
+		  };
+
+		  // var POSTResponse = '';
+		  // Set up the request
+		  var postReq = https.request(postOptions, function(res) {
+
+			  res.setEncoding('utf8');
+			  res.on('data', function (chunk) {
+				  // POSTResponse += chunk.toString();
+				  console.log('Response: ' + chunk);
+			  });
+		  }).on('error', function(err) {
+			 individualCallback(err);
+		  });
+		  
+		  // actually send the data
+		  // postReq.write(eventList[thisEvent]);
+		  postReq.end(JSON.stringify(thisEvent), 'utf8', individualCallback);
+	  });
+    
+  }), parallelCallback);
+  
 };
 
-var httpsPOSTEvent = function(thisEvent, destURL, resultCallback) {
-	console.log('making POST func');
-	return(function(resultCallback) {
-		var postOptions = {
-			hostname: destURL,
-			port: 443,
-			path: '/',
-			method: 'POST'
-		};
-
-		// var POSTResponse = '';
-		// Set up the request
-		var postReq = http.request(postOptions, function(res) {
-
-			res.setEncoding('utf8');
-			res.on('data', function (chunk) {
-				// POSTResponse += chunk.toString();
-				console.log('Response: ' + chunk);
-			});
-		}).on('error', function(err) {
-			resultCallback(err);
-		});
-		
-		// actually send the data
-		// postReq.write(eventList[thisEvent]);
-		postReq.end(thisEvent, 'utf8', resultCallback);
-	});
-};
-
-module.exports = {
-	eventAggregator : eventAggregator,
-	httpsPOSTEvent : httpsPOSTEvent // exported for testing
-};
+module.exports = eventAggregator;
