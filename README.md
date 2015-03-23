@@ -8,7 +8,6 @@ event aggregator for hnl.io
 The goal is to write the following functions:
 
 - API wrappers that universalize event queries (HTTPS) for
-  - Facebook
   - Eventbrite
   - Meetup
   - others as necessary
@@ -22,13 +21,9 @@ The main function, `event-aggregator`, goes through the following steps (using
 1. Queries all available event API providers by mapping through a JSON object
    containing the individual API query functions, and another object containing
    API config details.
-   2. Received events are remapped to a simpler structure through a quick
-      blocking call to helper functions.
 3. Cleaned event lists from each provider are mapped into an array of closures
-   containing POST requests.
-4. The array POST requests is submitted using `async.parallel`.
-5. `async.parallel` returns an array of POST responses, which are then handled
-   by the callback `event-aggregator` itself takes.
+   containing POST requests, which are submitted using `async.parallel`.
+5. The result is passed back out through a result callback.
 
 ## current status
 
@@ -38,16 +33,15 @@ The main function, `event-aggregator`, goes through the following steps (using
   - [ ] Docs
 - [ ] Meetup wrapper
   - [x] Tests (passing)
-  - [ ] Implementation
-    - [ ] needs check of async conversion from XML to JSON
+  - [x] Implementation
   - [ ] Docs
 - [ ] Facebook wrapper
   - [ ] Tests
   - [ ] Implementation
   - [ ] Docs
-- [ ] Universal event query generator/parser
-  - [ ] Tests
-  - [ ] Implementation
+- [x] Universal event query generator/parser
+  - [x] Tests
+  - [x] Implementation
 	- [x] Aggregation steps
-	- [ ] error handling
-  - [ ] Docs
+	- [x] error handling (currently loose)
+  - [x] Docs
