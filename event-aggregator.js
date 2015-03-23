@@ -13,29 +13,29 @@ var eventAggregator = function(queryHash, successCallback, providerName) {
 	}
 
 	async.waterfall([
-		// STEP 1+2
+		// STEP 1
 		function(nextCallback) {
-//			console.log('entered first step');
+			console.log('entered first step');
 			getEventsFromProviders(eventProviders, config,
 														 function(err, cleanEvents) {
 															 nextCallback(null, cleanEvents);
 														 },
 														 queryHash);
 		},
-		// STEP 3
+		// STEP 2
 		function(cleanEvents, nextCallback) {
-//			console.log('entered third step');
+			console.log('entered third step');
 			buildPOSTRequests(cleanEvents, config.api_url,
 												function(thisReqRes) { // callback for individual reqs
 													return(thisReqRes);
 												},
 												function(err, POSTArray) { // callback for whole array
-													nextCallback(null,thisReqRes);
+													nextCallback(null, thisReqRes);
 												});
 		},
-		// STEP 4
+		// STEP 3
 		function(POSTArray, nextCallback) {
-//			console.log('entered fourth step');
+			console.log('entered fourth step');
 			console.log(POSTArray);
 			nextCallback(null,
 									 async.parallel(POSTArray, function(err, POSTResults) {
@@ -54,7 +54,7 @@ var loadConfig = function(filename) {
 		return(JSON.parse(fs.readFileSync(filename, 'utf8')));
 	} catch(err) {
 		if (err.code === 'ENOENT') {
-			console.log("Couldn't find config.json in the current directory.");
+			throw new Error("Couldn't find config.json in the current directory.");
 		} else {
 			throw err;
 		}
@@ -70,61 +70,17 @@ var getEventsFromProviders = function(providerArray, providerConfig,
 												if (err) { console.error(err); }
 												// go straight to cleaning up received events since we
 												// have the provider matching info here
-												cleanCallback(err,
-																			eventCleaners[thisProvider](resEvents));
+												cleanCallback(err,resEvents);
 											},
 											queryHash);
 	}));
 };
 
 // STEP 2
-var eventCleaners = { // functions that sanitize received events
-	getEventbriteEvents : function(rawEvents) {
-		var eventArray = // this becomes an array of cleaned event objects
-				rawEvents['events'].map(function(thisEvent) {
-					// fill a new event object with the spec fields
-					var cleanEvent = {};
-					
-					cleanEvent['title'] = thisEvent['name']['text'];
-					cleanEvent['body'] = thisEvent['description']['text'];
-					cleanEvent['start'] = thisEvent['start']['utc']; // TODO convert to unix ms
-					cleanEvent['end'] = thisEvent['end']['utc']; // TODO convert to unix ms
-					cleanEvent['created_at'] = thisEvent['created']; // TODO convert to unix ms
-					cleanEvent['updated_at'] = thisEvent['changed'];
-					cleanEvent['imported'] = {
-						"resource_url" : thisEvent['resource_uri'],
-						"service" : 'Eventbrite'
-					};
-				});
-		return(eventArray);
-	},
-	getMeetupEvents : function(rawEvents) {
-		var eventArray = 
-				rawEvents['results'].map(function(thisEvent) { // this is an array
-						// fill a new event object with the spec fields
-						var cleanEvent = {};
-					
-					cleanEvent['title'] = thisEvent['name'];
-					cleanEvent['body'] = thisEvent['description']; // TODO strip HTML?
-					cleanEvent['start'] = thisEvent['time']; // TODO check if unix epoch ms
-					cleanEvent['end'] = thisEvent['time'] + thisEvent['duration']; // TODO
-					cleanEvent['created_at'] = thisEvent['created']; // TODO
-					cleanEvent['updated_at'] = thisEvent['updated']; // TODO
-					cleanEvent['imported'] = {
-						"resource_url" : thisEvent['event_url'],
-						"service" : 'Meetup'
-					};
-					
-				});
-		return(eventArray);
-	}
-};
-
-// STEP 3
 var buildPOSTRequests = function(eventList, destURL, resultCallback,
 																arrayCallback) {
-	arrayCallback(err, eventList.map(function(thisEvent) {
-			return(httpsPOSTEvent(thisEvent, destURL, resultCallback));
+	arrayCallback(null, eventList.map(function(thisEvent) {
+		return(httpsPOSTEvent(thisEvent, destURL, resultCallback));
 	}));
 };
 
