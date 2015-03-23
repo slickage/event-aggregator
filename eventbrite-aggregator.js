@@ -26,8 +26,7 @@ var getEventbriteEvents = function(authToken, callback, queryHash) {
 			GETBody += chunk.toString();
 		});
 		res.on('end', function() {
-      console.log(res.statusCode);
-      console.log(GETBody);
+      // console.log('HTTP ' + res.statusCode);
       // pass complete response body to data munger      
 			callback(null, cleanEvents(GETBody));
 		});
@@ -55,7 +54,6 @@ var translateGenQuery = function(genQuery) {
 };
 
 var cleanEvents = function(rawEvents) {
-  // console.log('raw eventbrite events: ');
   
   var eventbriteEvents = JSON.parse(rawEvents);
   // console.log(eventbriteEvents.hasOwnProperty('results'));
@@ -74,8 +72,10 @@ var cleanEvents = function(rawEvents) {
 				// fill a new event object with the spec fields
 				var cleanEvent = {};
 				
-				cleanEvent.title = thisEvent.name.text;
-				cleanEvent.body = thisEvent.description.text;
+				cleanEvent.title = !(thisEvent.name === null) ?
+          thisEvent.name.text : '';
+				cleanEvent.body = !(thisEvent.description === null) ?
+          thisEvent.description.text : '';
 				cleanEvent.start = thisEvent.start.utc; // TODO convert to unix ms
 				cleanEvent.end = thisEvent.end.utc; // TODO convert to unix ms
 				cleanEvent.created_at = thisEvent.created; // TODO convert to unix ms
@@ -84,6 +84,8 @@ var cleanEvents = function(rawEvents) {
 					"resource_url" : thisEvent.resource_uri,
 					"service" : 'Eventbrite'
 				};
+
+        return(cleanEvent);
 			});
 	return(eventArray);
 };

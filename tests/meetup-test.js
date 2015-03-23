@@ -10,9 +10,9 @@ var token = '1f2239571b3a4d192f505f185b407935';
 // add test query var
 var testQuery = { // honolulu airport
 	'lat' : 21.33,
-	'lon' : 157.94,
-	'radius' : 10000, // 10km
-	'time_end' : new Date().valueOf()
+	'lon' : -157.94,
+	'radius' : 50000, // 10km
+	'time_end' : new Date(2015, 11, 31).valueOf()
 };
 
 suite('meetup event fetcher', function() {

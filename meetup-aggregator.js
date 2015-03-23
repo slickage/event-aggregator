@@ -73,7 +73,8 @@ var cleanEvents = function(rawEvents) {
 					"resource_url" : thisEvent.event_url,
 					"service" : 'Meetup'
 				};
-				
+
+        return(cleanEvent);
 			});
 	return(eventArray);
   
