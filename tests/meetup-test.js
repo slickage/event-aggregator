@@ -25,39 +25,24 @@ suite('meetup event fetcher', function() {
   });
   
   it('submits an HTML request', function() {
-		getMeetupEvents(token, function() {}); // do-nothing callback
+		getMeetupEvents(token, function() {}, testQuery); // do-nothing callback
 		expect(https.request.calledOnce);
 	});
 
-	xit('returns a JSON string of valid events', function(done) {
-		// Meetup API doesn't accept key-only requests, so this test is not useful
-		// at the moment.
-		
+	it('returns an array from a spec-based query', function(done) {
+    this.timeout(15000); // increase timeout to wait for meetup
 		var callback = function(err, dataStr) { // function for async data return
-			if (err) console.log(err);
-			
-			expect(dataStr); // expect dataStr not to be null
-			var queryReturn = JSON.parse(dataStr);
-			expect(Array.isArray(queryReturn.results));
-			done();
-		};
-		
-		getMeetupEvents(token, callback);
-		
-	});
-
-	it('returns valid JSON from a spec-based query', function(done) {
-		var callback = function(err, dataStr) { // function for async data return
-			// if (err) console.log(err);
+			if (err) console.error(err);
 			
 			expect(err).null; // expect no errors
 			expect(dataStr).not.null; // expect data back
 			if (dataStr) {
-				var queryReturn = JSON.parse(dataStr);
-				expect(Array.isArray(queryReturn.results));
+				expect(Array.isArray(dataStr));
 			}
 			done();
 		};
+
+    // this passes its result to the callback above
 		getMeetupEvents(token, callback, testQuery);
 	});
 });
