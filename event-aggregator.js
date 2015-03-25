@@ -1,5 +1,5 @@
 // main aggregation function
-var https = require('https');
+var http = require('http');
 var fs = require('fs');
 var async = require('async');
 var agg = require('./eventprovidermodules.js'); // query providers
@@ -49,9 +49,10 @@ var getEventsFromProviders = function(providerArray, providerConfig,
 	return(providerArray.map(function(thisProvider) {
 		agg[thisProvider](providerConfig['providers'][thisProvider]['token'],
 											function(err, resEvents) {
-												if (err) { console.error(err); }
-												// go straight to cleaning up received events since we
-												// have the provider matching info here
+												if (err) {
+                          console.error(err);
+                          throw err;
+                        }
 												cleanCallback(err,resEvents);
 											},
 											queryHash);
@@ -66,28 +67,35 @@ var POSTEvents = function(eventList, destURL, parallelCallback) {
 
       var postOptions = {
 			  hostname: destURL,
-			  port: 443,
-			  path: '/',
-			  method: 'POST'
+			  port: 3000,
+			  path: '/events',
+			  method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
 		  };
-
-		  // var POSTResponse = '';
+      console.log(destURL);
+		  var POSTResponse = '';
 		  // Set up the request
-		  var postReq = https.request(postOptions, function(res) {
+		  var postReq = http.request(postOptions, function(res) {
 
         res.setEncoding('utf8');
 			  res.on('data', function (chunk) {
-				  // POSTResponse += chunk.toString();
+				  POSTResponse += chunk.toString();
 				  console.log('Response: ' + chunk);
 			  });
+
+        res.on('end', function() {
+          console.log(POSTResponse);
+        });
         
 		  }).on('error', function(err) {
 			  individualCallback(err);
 		  });
-		  
 		  // actually send the data
+      // console.log(JSON.stringify(thisEvent));
 		  postReq.end(JSON.stringify(thisEvent), 'utf8', individualCallback);
-      
 	  });
     
   }), parallelCallback);

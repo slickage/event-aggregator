@@ -69,10 +69,8 @@ var cleanEvents = function(rawEvents) {
 				cleanEvent.end = thisEvent.time + thisEvent.duration; // TODO
 				cleanEvent.created_at = thisEvent.created; // TODO
 				cleanEvent.updated_at = thisEvent.updated; // TODO
-				cleanEvent.imported = {
-					"resource_url" : thisEvent.event_url,
-					"service" : 'Meetup'
-				};
+				cleanEvent.resource_url = thisEvent.event_url;
+			  cleanEvent.service = 'Meetup';
 
         return(cleanEvent);
 			});

@@ -80,10 +80,8 @@ var cleanEvents = function(rawEvents) {
 				cleanEvent.end = thisEvent.end.utc; // TODO convert to unix ms
 				cleanEvent.created_at = thisEvent.created; // TODO convert to unix ms
 				cleanEvent.updated_at = thisEvent.changed;
-				cleanEvent.imported = {
-					"resource_url" : thisEvent.resource_uri,
-					"service" : 'Eventbrite'
-				};
+        cleanEvent.resource_url = thisEvent.resource_uri;
+				cleanEvent.service = 'Eventbrite';
 
         return(cleanEvent);
 			});

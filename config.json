@@ -1,5 +1,5 @@
 {
-	"api_url" : "https://hnl.io/api",
+	"api_url" : "127.0.0.1",
   "providers" : {
 	  "getEventbriteEvents" : {
 		  "token" : "5OTKXGRDYWFRA2SWONXT"
