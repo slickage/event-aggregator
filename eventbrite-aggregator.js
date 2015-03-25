@@ -76,10 +76,10 @@ var cleanEvents = function(rawEvents) {
           thisEvent.name.text : '';
 				cleanEvent.body = !(thisEvent.description === null) ?
           thisEvent.description.text : '';
-				cleanEvent.start = thisEvent.start.utc; // TODO convert to unix ms
-				cleanEvent.end = thisEvent.end.utc; // TODO convert to unix ms
-				cleanEvent.created_at = thisEvent.created; // TODO convert to unix ms
-				cleanEvent.updated_at = thisEvent.changed;
+				cleanEvent.start = new Date(thisEvent.start.utc).valueOf();
+				cleanEvent.end = new Date(thisEvent.end.utc).valueOf();
+				cleanEvent.created_at = new Date(thisEvent.created).valueOf();
+				cleanEvent.updated_at = new Date(thisEvent.changed).valueOf();
         cleanEvent.resource_url = thisEvent.resource_uri;
 				cleanEvent.service = 'Eventbrite';
 
