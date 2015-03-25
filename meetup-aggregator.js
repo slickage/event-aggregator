@@ -2,6 +2,7 @@
 // Query:
 // https://www.eventbriteapi.com/2/open_events.json?key=
 var https = require('https');
+var striptags = require('striptags');
 var hashToGET = require("./hashtoget.js");
 
 var getMeetupEvents = function(authToken, callback, queryHash) {
@@ -62,13 +63,13 @@ var cleanEvents = function(rawEvents) {
 			meetupEvents.results.map(function(thisEvent) { // this is an array
         // fill a new event object with the spec fields
 				var cleanEvent = {};
-				
+        
 				cleanEvent.title = thisEvent.name;
-				cleanEvent.body = thisEvent.description; // TODO strip HTML?
-				cleanEvent.start = thisEvent.time; // TODO check if unix epoch ms
-				cleanEvent.end = thisEvent.time + thisEvent.duration; // TODO
-				cleanEvent.created_at = thisEvent.created; // TODO
-				cleanEvent.updated_at = thisEvent.updated; // TODO
+				cleanEvent.body = striptags(thisEvent.description);
+				cleanEvent.start = thisEvent.time;
+				cleanEvent.end = thisEvent.time + thisEvent.duration;
+				cleanEvent.created_at = thisEvent.created;
+				cleanEvent.updated_at = thisEvent.updated;
 				cleanEvent.resource_url = thisEvent.event_url;
 			  cleanEvent.service = 'Meetup';
 
