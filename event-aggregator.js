@@ -53,7 +53,7 @@ var getEventsFromProviders = function(providerArray, providerConfig,
                           console.error(err);
                           throw err;
                         }
-												cleanCallback(err,resEvents);
+												cleanCallback(null, resEvents);
 											},
 											queryHash);
 	}));
@@ -83,19 +83,20 @@ var POSTEvents = function(eventList, destURL, parallelCallback) {
         res.setEncoding('utf8');
 			  res.on('data', function (chunk) {
 				  POSTResponse += chunk.toString();
-				  console.log('Response: ' + chunk);
+				  // console.log('Response: ' + chunk);
 			  });
 
-        res.on('end', function() {
-          console.log(POSTResponse);
-        });
+        // res.on('end', function() {
+        //   console.log(POSTResponse);
+        // });
         
 		  }).on('error', function(err) {
 			  individualCallback(err);
 		  });
 		  // actually send the data
-      // console.log(JSON.stringify(thisEvent));
-		  postReq.end(JSON.stringify(thisEvent), 'utf8', individualCallback);
+      // wrap in root 'event' object for Rails controller niceness
+		  postReq.end(JSON.stringify({'event': thisEvent}), 'utf8',
+                  individualCallback);
 	  });
     
   }), parallelCallback);
