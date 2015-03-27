@@ -1,5 +1,5 @@
 // main aggregation function
-var http = require('http');
+var request = require('request');
 var fs = require('fs');
 var async = require('async');
 var agg = require('./eventprovidermodules.js'); // query providers
@@ -66,38 +66,20 @@ var POSTEvents = function(eventList, destURL, parallelCallback) {
     return(function(individualCallback) {
 
       var postOptions = {
-			  hostname: destURL,
-			  port: 3000,
-			  path: '/events',
+			  url: destURL,
 			  method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json'
+        },
+        form: {
+          event: thisEvent
         }
 		  };
       console.log(destURL);
-		  var POSTResponse = '';
-		  // Set up the request
-		  var postReq = http.request(postOptions, function(res) {
 
-        res.setEncoding('utf8');
-			  res.on('data', function (chunk) {
-				  POSTResponse += chunk.toString();
-				  // console.log('Response: ' + chunk);
-			  });
-
-        // res.on('end', function() {
-        //   console.log(POSTResponse);
-        // });
-        
-		  }).on('error', function(err) {
-			  individualCallback(err);
-		  });
-		  // actually send the data
-      // wrap in root 'event' object for Rails controller niceness
-		  postReq.end(JSON.stringify({'event': thisEvent}), 'utf8',
-                  individualCallback);
-	  });
+      request.post(postOptions, individualCallback);
+    });
     
   }), parallelCallback);
   
