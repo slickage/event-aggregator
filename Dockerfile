@@ -1,3 +1,5 @@
+# sudo docker run -d -p 127.0.0.1:5000:5000
+
 FROM centos:centos7
 MAINTAINER Trevor Alexander <talex@privatdemail.net>
 
@@ -10,15 +12,15 @@ RUN yum install -y nodejs npm
 # copy in necessary files
 # TODO simplify deployment fs tree to reduce commands
 RUN mkdir /var/event-aggregator
-ADD config.json /var/event-aggregator/
-ADD package.json /var/event-aggregator/
-ADD event-aggregator.js /var/event-aggregator/
-ADD eventbrite-aggregator.js /var/event-aggregator/
-ADD meetup-aggregator.js /var/event-aggregator/
-ADD hashtoget.js /var/event-aggregator/
-
-# get set up to query
 WORKDIR /var/event-aggregator/
+ADD config.json ./
+ADD package.json ./
+ADD event-aggregator.js ./
+ADD eventbrite-aggregator.js ./
+ADD meetup-aggregator.js ./
+ADD hashtoget.js ./
+
+# get set up to run aggregator
 RUN npm install
 
 # set up scheduling
