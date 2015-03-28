@@ -1,13 +1,12 @@
 # sudo docker run -d -p 127.0.0.1:5000:5000
 
-FROM centos:centos7
+FROM ubuntu:latest
 MAINTAINER Trevor Alexander <talex@privatdemail.net>
 
-RUN yum -y update; yum clean all
-RUN yum -y install epel-release; yum clean all
-
 # set up node, npm
-RUN yum install -y nodejs npm
+RUN apt-get install -y curl
+RUN curl -sL https://deb.nodesource.com/setup | sudo bash -
+RUN apt-get install -y nodejs build-essential
 
 # copy in necessary files
 # TODO simplify deployment fs tree to reduce commands
