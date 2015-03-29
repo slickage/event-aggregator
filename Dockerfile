@@ -18,6 +18,7 @@ ADD event-aggregator.js ./
 ADD eventbrite-aggregator.js ./
 ADD meetup-aggregator.js ./
 ADD hashtoget.js ./
+ADD scrape-all.js ./
 
 # get set up to run aggregator
 RUN npm install
