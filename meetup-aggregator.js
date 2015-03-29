@@ -65,11 +65,12 @@ var cleanEvents = function(rawEvents) {
 				var cleanEvent = {};
         
 				cleanEvent.title = thisEvent.name;
-				cleanEvent.body = striptags(thisEvent.description);
+				cleanEvent.body = !(thisEvent.description === undefined) ?
+          striptags(thisEvent.description) : '';
 				cleanEvent.start = thisEvent.time;
 				cleanEvent.end = thisEvent.time + thisEvent.duration;
-				cleanEvent.created_at = thisEvent.created;
-				cleanEvent.updated_at = thisEvent.updated;
+				cleanEvent.resource_created_at = thisEvent.created;
+				cleanEvent.resource_updated_at = thisEvent.updated;
 				cleanEvent.resource_url = thisEvent.event_url;
 			  cleanEvent.service = 'Meetup';
 
