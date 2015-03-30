@@ -16,4 +16,4 @@ var query = { // honolulu airport
 	'time_end' : twoWeeksLater.valueOf()
 };
 
-eventAggregator(query);
+setTimeout(eventAggregator(query, console.log), config.check_frequency);

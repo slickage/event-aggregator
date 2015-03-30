@@ -23,21 +23,11 @@ ADD meetup-aggregator.js ./
 ADD hashtoget.js ./
 ADD scrape-all.js ./
 
-# get set up to run aggregator
+# install dependencies
 RUN npm install
 
-# set up scheduling
-# from http://www.ekito.fr/people/run-a-cron-job-with-docker/
-# Add crontab file in the cron directory
-ADD crontab /etc/cron.d/event-aggregator-cron
-# Give execution rights on the cron job
-RUN chmod 0644 /etc/cron.d/event-aggregator-cron
- 
-# Create the log file to be able to run tail
-RUN touch /var/log/cron.log
- 
-# Run the command on container startup
-CMD cron && tail -f /var/log/cron.log
+# run and log final callback output
+CMD node scrape-all.js > /var/log/event-aggregator.log
 
 
 
