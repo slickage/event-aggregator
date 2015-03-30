@@ -1,4 +1,6 @@
-# sudo docker run -d -p 127.0.0.1:5000:5000
+# for single-container testing, run:
+# docker build -t event-agg .
+# docker run -i -t --net=host event-agg
 
 FROM ubuntu:latest
 MAINTAINER Trevor Alexander <talex@privatdemail.net>
@@ -16,6 +18,7 @@ ADD config.json ./
 ADD package.json ./
 ADD event-aggregator.js ./
 ADD eventbrite-aggregator.js ./
+ADD eventprovidermodules.js ./
 ADD meetup-aggregator.js ./
 ADD hashtoget.js ./
 ADD scrape-all.js ./
