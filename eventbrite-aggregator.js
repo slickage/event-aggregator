@@ -78,9 +78,9 @@ var cleanEvents = function(rawEvents) {
           thisEvent.description.text : '';
 				cleanEvent.start = new Date(thisEvent.start.utc).valueOf();
 				cleanEvent.end = new Date(thisEvent.end.utc).valueOf();
-				cleanEvent.resource_created_at = new Date(thisEvent.created).valueOf();
-				cleanEvent.resource_updated_at = new Date(thisEvent.changed).valueOf();
-        cleanEvent.resource_url = thisEvent.resource_uri;
+				cleanEvent.upstream_created_at = new Date(thisEvent.created).valueOf();
+				cleanEvent.upstream_updated_at = new Date(thisEvent.changed).valueOf();
+        cleanEvent.upstream_url = thisEvent.resource_uri;
 				cleanEvent.service = 'Eventbrite';
 
         return(cleanEvent);

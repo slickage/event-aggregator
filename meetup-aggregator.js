@@ -69,9 +69,9 @@ var cleanEvents = function(rawEvents) {
           striptags(thisEvent.description) : '';
 				cleanEvent.start = thisEvent.time;
 				cleanEvent.end = thisEvent.time + thisEvent.duration;
-				cleanEvent.resource_created_at = thisEvent.created;
-				cleanEvent.resource_updated_at = thisEvent.updated;
-				cleanEvent.resource_url = thisEvent.event_url;
+				cleanEvent.upstream_created_at = thisEvent.created;
+				cleanEvent.upstream_updated_at = thisEvent.updated;
+				cleanEvent.upstream_url = thisEvent.event_url;
 			  cleanEvent.service = 'Meetup';
 
         return(cleanEvent);
