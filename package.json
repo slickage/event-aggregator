@@ -15,7 +15,8 @@
     "lodash": "^3.3.0",
     "follow-redirects": "0.0.3",
     "striptags": "~2.0.1",
-    "request": "~2.54.0"
+    "request": "~2.54.0",
+    "forever": "~0.14.1"
   },
   "devDependencies": {
     "jasmine": "^2.2.1",

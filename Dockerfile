@@ -27,7 +27,7 @@ ADD scrape-all.js ./
 RUN npm install
 
 # run and log final callback output
-CMD node scrape-all.js > /var/log/event-aggregator.log
+CMD ./node_modules/forever/bin/forever scrape-all.js > /var/log/event-aggregator.log
 
 
 
