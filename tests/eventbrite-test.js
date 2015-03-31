@@ -4,7 +4,7 @@ chai.use(require('sinon-chai'));
 var sinon = require('sinon');
 
 var https = require('https');
-var getEventbriteEvents = require('../eventbrite-aggregator.js');
+var getEventbriteEvents = require('../js/eventbrite-aggregator.js');
 var token = '5OTKXGRDYWFRA2SWONXT';
 
 var testQuery = { // honolulu airport

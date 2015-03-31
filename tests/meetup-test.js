@@ -4,7 +4,7 @@ chai.use(require('sinon-chai'));
 var sinon = require('sinon');
 
 var https = require('https');
-var getMeetupEvents = require('../meetup-aggregator.js');
+var getMeetupEvents = require('../js/meetup-aggregator.js');
 var token = '1f2239571b3a4d192f505f185b407935';
 
 // add test query var

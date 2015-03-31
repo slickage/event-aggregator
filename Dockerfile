@@ -16,12 +16,7 @@ RUN mkdir /var/event-aggregator
 WORKDIR /var/event-aggregator/
 ADD config.json ./
 ADD package.json ./
-ADD event-aggregator.js ./
-ADD eventbrite-aggregator.js ./
-ADD eventprovidermodules.js ./
-ADD meetup-aggregator.js ./
-ADD hashtoget.js ./
-ADD scrape-all.js ./
+ADD js ./
 
 # install dependencies
 RUN npm install

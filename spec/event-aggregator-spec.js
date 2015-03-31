@@ -2,8 +2,8 @@ describe('main aggregator', function() {
 	var fs = require('fs');
 	var https = require('https');
 	var async = require('async');
-	var agg = require('../eventprovidermodules.js'); // query providers
-  var eventAggregator = require('../event-aggregator.js'); // main module
+	var agg = require('../js/eventprovidermodules.js'); // query providers
+  var eventAggregator = require('../js/event-aggregator.js'); // main module
 	var config = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
 
 	// add test query var
