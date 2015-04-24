@@ -13,7 +13,8 @@ var query = { // honolulu airport
 	'lat' : 21.33,
 	'lon' : -157.94,
 	'radius' : 1000000, // 1000km
-	'time_end' : twoWeeksLater.valueOf()
+	'time_end' : twoWeeksLater.valueOf(),
+  'keywords' : config.keywords
 };
 
 setTimeout(eventAggregator(query, console.log), config.check_frequency);

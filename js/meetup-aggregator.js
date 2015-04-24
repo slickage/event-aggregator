@@ -40,7 +40,8 @@ var translateGenQuery = function(genQuery) {
 		'lon' : genQuery['lon'],
 		'radius' : genQuery['radius'],
 		// no need to explicitly specify 'from now' as it is default for meetup
-		'time' : "," + genQuery['time_end'] // as epoch
+		'time' : "," + genQuery['time_end'], // as epoch
+    'text' : genQuery['keywords'].join(' ')
 	};
 	return(meetupQuery);
 };

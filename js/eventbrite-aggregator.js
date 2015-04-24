@@ -47,7 +47,8 @@ var translateGenQuery = function(genQuery) {
 		'start_date.range_start' : new Date().toJSON().slice(0,-5) + 'Z',
 		 // convert from epoch ms to UTC
 		'start_date.range_end' : new Date(
-			genQuery['time_end']).toJSON().slice(0,-5) + 'Z'
+			genQuery['time_end']).toJSON().slice(0,-5) + 'Z',
+    'q' : genQuery['keywords'].join(',')
 	};
 
 	return(eventbriteQuery);
