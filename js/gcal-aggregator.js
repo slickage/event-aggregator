@@ -45,19 +45,18 @@ var cleanEvents = function(rawEvents) {
 				// fill a new event object with the spec fields
 				var cleanEvent = {};
 				
-				cleanEvent.title = !(thisEvent.name === null) ?
-          thisEvent.name.text : '';
-				cleanEvent.body = !(thisEvent.description === null) ?
-          thisEvent.description.text : '';
+				cleanEvent.title = !(thisEvent.summary === null) ?
+          thisEvent.summary : '';
+				cleanEvent.body = '';
 				cleanEvent.start =
-          new Date(thisEvent.start.utc).toISOString();
+          new Date(thisEvent.start.dateTime).toISOString();
 				cleanEvent.end =
-          new Date(thisEvent.end.utc).toISOString();
+          new Date(thisEvent.end.dateTime).toISOString();
 				cleanEvent.upstream_created_at =
           new Date(thisEvent.created).toISOString();
 				cleanEvent.upstream_updated_at =
-          new Date(thisEvent.changed).toISOString();
-        cleanEvent.upstream_url = thisEvent.resource_uri;
+          new Date(thisEvent.updated).toISOString();
+        cleanEvent.upstream_url = thisEvent.htmlLink;
 				cleanEvent.service = 'GCal';
 
         return(cleanEvent);
