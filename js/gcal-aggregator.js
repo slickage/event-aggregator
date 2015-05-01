@@ -1,0 +1,68 @@
+// GCal event searching
+// Query URL:
+// https://www.googleapis.com/calendar/v3/calendars/{calendarid}/events?key=AIzaSyBcxfzlYVchESyN1eITak9GKyo0a1lG9K4
+// (Worthless) API doc:
+// https://developers.google.com/google-apps/calendar/v3/reference/calendars/get#auth
+var https = require('follow-redirects').https;
+
+var getGCalEvents = function(calID, authToken, callback) {
+  // function expects a calendar ID string, a token for the request auth, and a
+  // callback function to handle the result
+
+	var GETURL = 'https://www.googleapis.com/calendar/v3/calendars/{calendarid}' +
+			'/events?key=' + authToken;
+  // console.log(GETURL);
+
+  var GETBody = '';
+	https.get(GETURL, function(res) {
+		res.on('data', function(chunk) {
+			GETBody += chunk.toString();
+		});
+		res.on('end', function() {
+      // console.log('HTTP ' + res.statusCode);
+      // pass complete response body to data munger      
+			callback(null, cleanEvents(GETBody));
+		});
+	}).on('error', function(err) {
+		callback(err);
+	});
+};
+
+var cleanEvents = function(rawEvents) {
+  
+  var gcalEvents = JSON.parse(rawEvents);
+  
+  if (!(gcalEvents.hasOwnProperty('items'))) {
+    throw new Error('Bad request');
+  }
+  if (gcalEvents.items.length === 0) {
+    // empty array case, i.e. no events
+    return([]);
+  }
+  
+	var eventArray = // this becomes an array of cleaned event objects
+			gcalEvents.items.map(function(thisEvent) {
+				// fill a new event object with the spec fields
+				var cleanEvent = {};
+				
+				cleanEvent.title = !(thisEvent.name === null) ?
+          thisEvent.name.text : '';
+				cleanEvent.body = !(thisEvent.description === null) ?
+          thisEvent.description.text : '';
+				cleanEvent.start =
+          new Date(thisEvent.start.utc).toISOString();
+				cleanEvent.end =
+          new Date(thisEvent.end.utc).toISOString();
+				cleanEvent.upstream_created_at =
+          new Date(thisEvent.created).toISOString();
+				cleanEvent.upstream_updated_at =
+          new Date(thisEvent.changed).toISOString();
+        cleanEvent.upstream_url = thisEvent.resource_uri;
+				cleanEvent.service = 'GCal';
+
+        return(cleanEvent);
+			});
+	return(eventArray);
+};
+
+module.exports = getGCalEvents;
