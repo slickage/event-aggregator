@@ -47,7 +47,8 @@ var cleanEvents = function(rawEvents) {
 				
 				cleanEvent.title = !(thisEvent.summary === null) ?
           thisEvent.summary : '';
-				cleanEvent.body = '';
+				cleanEvent.body = !(thisEvent.description === null) ?
+          thisEvent.description : '';
 				cleanEvent.start =
           new Date(thisEvent.start.dateTime).toISOString();
 				cleanEvent.end =
