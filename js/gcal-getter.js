@@ -5,11 +5,19 @@
 // https://developers.google.com/google-apps/calendar/v3/reference/calendars/get#auth
 var https = require('follow-redirects').https;
 
+var firstVal = function(obj) {
+  // pseudo-first operator
+  if (typeof(obj) !== 'object') {
+    return obj;
+  }
+  return firstVal(obj[Object.keys(obj)[0]]);
+};
+
 var getGCalEvents = function(calID, authToken, callback) {
   // function expects a calendar ID string, a token for the request auth, and a
   // callback function to handle the result
 
-	var GETURL = 'https://www.googleapis.com/calendar/v3/calendars/{calendarid}' +
+	var GETURL = 'https://www.googleapis.com/calendar/v3/calendars/' + calID +
 			'/events?key=' + authToken;
   // console.log(GETURL);
 
@@ -44,15 +52,15 @@ var cleanEvents = function(rawEvents) {
 			gcalEvents.items.map(function(thisEvent) {
 				// fill a new event object with the spec fields
 				var cleanEvent = {};
-				
+
 				cleanEvent.title = !(thisEvent.summary === null) ?
           thisEvent.summary : '';
 				cleanEvent.body = !(thisEvent.description === null) ?
           thisEvent.description : '';
 				cleanEvent.start =
-          new Date(thisEvent.start.dateTime).toISOString();
+          new Date(firstVal(thisEvent.start)).toISOString();
 				cleanEvent.end =
-          new Date(thisEvent.end.dateTime).toISOString();
+          new Date(firstVal(thisEvent.end)).toISOString();
 				cleanEvent.upstream_created_at =
           new Date(thisEvent.created).toISOString();
 				cleanEvent.upstream_updated_at =
