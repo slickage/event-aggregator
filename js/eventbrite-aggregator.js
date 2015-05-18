@@ -6,9 +6,10 @@
 var https = require('follow-redirects').https;
 var hashToGET = require('./hashtoget.js');
 
-var getEventbriteEvents = function(authToken, callback, queryHash) {
+var getEventbriteEvents = function(options, callback, queryHash) {
   // function expects a base url, a token for the request auth, and a hash of
   // query terms with their values
+  var authToken = options.token;
 
 	var queryString = ''; // default if no query hash passed in
 

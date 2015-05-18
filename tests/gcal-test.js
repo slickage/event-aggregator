@@ -6,7 +6,6 @@ var sinon = require('sinon');
 var https = require('https');
 var getGCalEvents = require('../js/gcal-getter.js');
 var getAllGCalEvents = require('../js/gcal-aggregator.js');
-var token = 'AIzaSyBcxfzlYVchESyN1eITak9GKyo0a1lG9K4';
 var config = require('../config.json');
 
 suite('gcal event fetcher (single)', function() {
@@ -65,9 +64,7 @@ suite('gcal event fetcher (array)', function() {
   
 	it('submits as many HTTP reqs as there are calIDs', function() {
     var httpsSpy = sinon.spy(https, 'request');
-    getAllGCalEvents(config.providers.getAllGCalEvents.calids,
-                  config.providers.getAllGCalEvents.apikey, function(){});
-
+    getAllGCalEvents(config.providers.getAllGCalEvents, console.log);
 		expect(
       sinon.assert.callCount(httpsSpy,
                              config.providers.getAllGCalEvents.calids.length)
@@ -75,10 +72,6 @@ suite('gcal event fetcher (array)', function() {
     );
 
     https.request.restore();
-    
-	});
 
-  it('submits POST requests to the API endpoint', function() {
-    expect(false);
-  });
+	});
 });

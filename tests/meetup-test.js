@@ -5,15 +5,21 @@ var sinon = require('sinon');
 
 var https = require('https');
 var getMeetupEvents = require('../js/meetup-aggregator.js');
-var token = '1f2239571b3a4d192f505f185b407935';
+var config = require('../config.json');
+
+// get date 2 weeks ahead
+var twoWeeksLater = new Date();
+twoWeeksLater = twoWeeksLater.setDate(twoWeeksLater.getDate() + 14);
 
 // add test query var
 var testQuery = { // honolulu airport
 	'lat' : 21.33,
 	'lon' : -157.94,
-	'radius' : 50000, // 10km
-	'time_end' : new Date(2015, 11, 31).valueOf()
+	'radius' : 1000000, // 1000km
+	'time_end' : twoWeeksLater.valueOf(),
+  'keywords' : config.keywords
 };
+
 
 suite('meetup event fetcher', function() {
   setup(function() {
@@ -25,7 +31,7 @@ suite('meetup event fetcher', function() {
   });
   
   it('submits an HTML request', function() {
-		getMeetupEvents(token, function() {}, testQuery); // do-nothing callback
+		getMeetupEvents(config.providers.getMeetupEvents, function() {}, testQuery); // do-nothing callback
 		expect(https.request.calledOnce);
 	});
 
@@ -43,6 +49,6 @@ suite('meetup event fetcher', function() {
 		};
 
     // this passes its result to the callback above
-		getMeetupEvents(token, callback, testQuery);
+		getMeetupEvents(config.providers.getMeetupEvents, callback, testQuery);
 	});
 });

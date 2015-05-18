@@ -6,13 +6,18 @@ describe('main aggregator', function() {
   var eventAggregator = require('../js/event-aggregator.js'); // main module
 	var config = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
 
+  // get date 2 weeks ahead
+  var twoWeeksLater = new Date();
+  twoWeeksLater = twoWeeksLater.setDate(twoWeeksLater.getDate() + 14);
+
 	// add test query var
-	var testQuery = { // honolulu airport
-		'lat' : 21.33,
-		'lon' : -157.94,
-		'radius' : 50000, // 10km
-		'time_end' : new Date(2015, 11, 31).valueOf()
-	};
+  var testQuery = { // honolulu airport
+	  'lat' : 21.33,
+	  'lon' : -157.94,
+	  'radius' : 1000000, // 1000km
+	  'time_end' : twoWeeksLater.valueOf(),
+    'keywords' : config.keywords
+  };
 	
 	beforeEach(function() { // change timeout interval for async calls
     originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
@@ -44,10 +49,12 @@ describe('main aggregator', function() {
 
 		spyOn(agg,'getEventbriteEvents').and.callThrough();
 		spyOn(agg,'getMeetupEvents').and.callThrough();
+    spyOn(agg,'getAllGCalEvents').and.callThrough();
 
 		eventAggregator(testQuery, function() {
       expect(agg.getEventbriteEvents).toHaveBeenCalled();
 		  expect(agg.getMeetupEvents).toHaveBeenCalled();
+      expect(agg.getAllGCalEvents).toHaveBeenCalled();
       done();
     });
 	});
@@ -55,7 +62,7 @@ describe('main aggregator', function() {
 	it('queries a named event provider when passed the appropriate arg',
 		 function(done) {
 
-			 spyOn(agg,'getEventbriteEvents').and.callThrough();
+			 spyOn(agg,'getEventbriteEvents');
 			 eventAggregator(testQuery, function() {
          expect(agg.getEventbriteEvents).toHaveBeenCalled();
 			   done();

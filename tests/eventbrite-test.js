@@ -5,13 +5,19 @@ var sinon = require('sinon');
 
 var https = require('https');
 var getEventbriteEvents = require('../js/eventbrite-aggregator.js');
-var token = '5OTKXGRDYWFRA2SWONXT';
+var config = require('../config.json');
 
+// get date 2 weeks ahead
+var twoWeeksLater = new Date();
+twoWeeksLater = twoWeeksLater.setDate(twoWeeksLater.getDate() + 14);
+
+// add test query var
 var testQuery = { // honolulu airport
 	'lat' : 21.33,
 	'lon' : -157.94,
-	'radius' : 50000, // 50km
-	'time_end' : new Date(2015, 11, 31).valueOf()
+	'radius' : 1000000, // 1000km
+	'time_end' : twoWeeksLater.valueOf(),
+  'keywords' : config.keywords
 };
 
 suite('eventbrite event fetcher', function() {
@@ -31,7 +37,7 @@ suite('eventbrite event fetcher', function() {
 	it('submits an HTML request', function() {
 		sinon.spy(https, 'request');
 
-		getEventbriteEvents(token, function () {}, testQuery);
+		getEventbriteEvents(config.providers.getEventbriteEvents, function () {}, testQuery);
 
 		expect(https.request.calledOnce);
 	});
@@ -50,7 +56,7 @@ suite('eventbrite event fetcher', function() {
 			}
 			done();
 		};
-		getEventbriteEvents(token, callback, testQuery);
+		getEventbriteEvents(config.providers.getEventbriteEvents, callback, testQuery);
 	});
 	
 });

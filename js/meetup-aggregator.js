@@ -5,9 +5,10 @@ var https = require('https');
 var striptags = require('striptags');
 var hashToGET = require("./hashtoget.js");
 
-var getMeetupEvents = function(authToken, callback, queryHash) {
-  // function expects a base url, a token for the request auth, and a hash of
-  // query terms with their values
+var getMeetupEvents = function(options, callback, queryHash) {
+  // function expects a base url, an options obj containing a token for the
+  // request auth, and a hash of query terms with their values
+  var authToken = options.token;
 	var queryString = ''; // default if no queryHash present
 	
 	if (typeof(queryHash) !== 'undefined') { // if query hash passed
