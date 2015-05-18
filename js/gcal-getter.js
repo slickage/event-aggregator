@@ -5,12 +5,22 @@
 // https://developers.google.com/google-apps/calendar/v3/reference/calendars/get#auth
 var https = require('follow-redirects').https;
 
-var firstVal = function(obj) {
-  // pseudo-first operator
-  if (typeof(obj) !== 'object') {
-    return obj;
+var actualGDate = function(gCalObj) {
+  // this function exists solely to handle google calendar's indecisive date
+  // formatting (╯°□°）╯︵ ┻━┻
+
+  if (typeof(gCalObj) === 'undefined') {
+    return(undefined);
   }
-  return firstVal(obj[Object.keys(obj)[0]]);
+
+  // if we can get it, prefer dateTime object
+  if (gCalObj.hasOwnProperty('dateTime')) {
+    return(gCalObj.dateTime);
+  } else if (gCalObj.hasOwnProperty('date')) {
+    return(gCalObj.date);    
+  } else {
+    return(undefined);
+  }
 };
 
 var getGCalEvents = function(calID, authToken, callback) {
@@ -19,7 +29,6 @@ var getGCalEvents = function(calID, authToken, callback) {
 
 	var GETURL = 'https://www.googleapis.com/calendar/v3/calendars/' + calID +
 			'/events?key=' + authToken;
-  // console.log(GETURL);
 
   var GETBody = '';
 	https.get(GETURL, function(res) {
@@ -53,14 +62,31 @@ var cleanEvents = function(rawEvents) {
 				// fill a new event object with the spec fields
 				var cleanEvent = {};
 
+        if (typeof(thisEvent.summary) === 'undefined') {
+          return(null);
+        }
+        
 				cleanEvent.title = !(thisEvent.summary === null) ?
           thisEvent.summary : '';
 				cleanEvent.body = !(thisEvent.description === null) ?
           thisEvent.description : '';
-				cleanEvent.start =
-          new Date(firstVal(thisEvent.start)).toISOString();
-				cleanEvent.end =
-          new Date(firstVal(thisEvent.end)).toISOString();
+
+        var startDate = actualGDate(thisEvent.start);
+        if (startDate) {
+				  cleanEvent.start =
+            new Date(startDate).toISOString();
+        } else {
+          cleanEvent.start = null;
+        }
+        var endDate = actualGDate(thisEvent.end);
+        if (endDate) {
+				  cleanEvent.end =
+            new Date(endDate).toISOString();
+        } else {
+          cleanEvent.end = null;
+        }
+        console.log(thisEvent.summary);
+        // console.log(thisEvent.created);
 				cleanEvent.upstream_created_at =
           new Date(thisEvent.created).toISOString();
 				cleanEvent.upstream_updated_at =
