@@ -5,10 +5,11 @@ var sinon = require('sinon');
 
 var https = require('https');
 var getGCalEvents = require('../js/gcal-getter.js');
+var getAllGCalEvents = require('../js/gcal-aggregator.js');
 var token = 'AIzaSyBcxfzlYVchESyN1eITak9GKyo0a1lG9K4';
-var calID = 'hsdc.hi@gmail.com';
+var config = require('../config.json');
 
-suite('gcal event fetcher', function() {
+suite('gcal event fetcher (single)', function() {
 	
 	setup(function() {
     sinon.spy(https, 'request');
@@ -23,9 +24,8 @@ suite('gcal event fetcher', function() {
 	});
 
 	it('submits an HTML request', function() {
-		sinon.spy(https, 'request');
-
-		getGCalEvents(calID, token, function(){});
+		getGCalEvents(config.providers.getAllGCalEvents.calids[0],
+                  config.providers.getAllGCalEvents.apikey, function(){});
 
 		expect(https.request.calledOnce);
 	});
@@ -44,7 +44,41 @@ suite('gcal event fetcher', function() {
 			}
 			done();
 		};
-		getGCalEvents(calID, token, callback);
+		getGCalEvents(config.providers.getAllGCalEvents.calids[0],
+                  config.providers.getAllGCalEvents.apikey, callback);
 	});
 	
+});
+
+suite('gcal event fetcher (array)', function() {
+
+  setup(function() {
+  });
+  
+  teardown(function() {
+  });
+  
+  it('exports a query function', function() {
+		expect(getAllGCalEvents).to.be.an.instanceof(Function);
+	});
+
+  
+	it('submits as many HTTP reqs as there are calIDs', function() {
+    var httpsSpy = sinon.spy(https, 'request');
+    getAllGCalEvents(config.providers.getAllGCalEvents.calids,
+                  config.providers.getAllGCalEvents.apikey, function(){});
+
+		expect(
+      sinon.assert.callCount(httpsSpy,
+                             config.providers.getAllGCalEvents.calids.length)
+
+    );
+
+    https.request.restore();
+    
+	});
+
+  it('submits POST requests to the API endpoint', function() {
+    expect(false);
+  });
 });
