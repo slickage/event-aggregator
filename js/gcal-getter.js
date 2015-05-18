@@ -28,7 +28,7 @@ var getGCalEvents = function(calID, authToken, callback) {
 		});
 		res.on('end', function() {
       // console.log('HTTP ' + res.statusCode);
-      // pass complete response body to data munger      
+      // pass complete response body to data munger 
 			callback(null, cleanEvents(GETBody));
 		});
 	}).on('error', function(err) {
