@@ -1,5 +1,5 @@
 {
-	"api_url" : "http://127.0.0.1:3000/events",
+	"api_url" : "http://127.0.0.1:3000/api/events",
   "providers" : {
 	  "getEventbriteEvents" : {
 		  "token" : "5OTKXGRDYWFRA2SWONXT"
@@ -9,7 +9,8 @@
 	  },
     "getAllGCalEvents" : {
       "apikey": "AIzaSyBcxfzlYVchESyN1eITak9GKyo0a1lG9K4",
-      "calids": ["hsdc.hi@gmail.com"]
+      "calids": ["hsdc.hi@gmail.com",
+                 "auhklcpgrjbfkj0n0ha0o1h38s@group.calendar.google.com"]
     }
   },
   "check_frequency": 43200000,
