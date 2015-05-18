@@ -47,9 +47,9 @@ describe('main aggregator', function() {
 	it('queries all event providers by default', function(done) {
 		// TODO generalize this for all available providers
 
-		spyOn(agg,'getEventbriteEvents').and.callThrough();
-		spyOn(agg,'getMeetupEvents').and.callThrough();
-    spyOn(agg,'getAllGCalEvents').and.callThrough();
+		spyOn(agg,'getEventbriteEvents');
+		spyOn(agg,'getMeetupEvents');
+    spyOn(agg,'getAllGCalEvents');
 
 		eventAggregator(testQuery, function() {
       expect(agg.getEventbriteEvents).toHaveBeenCalled();
