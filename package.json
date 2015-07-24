@@ -17,6 +17,7 @@
     "forever": "~0.14.1",
     "lodash": "^3.3.0",
     "request": "~2.54.0",
+    "stream-to-array": "^2.0.2",
     "striptags": "~2.0.1"
   },
   "devDependencies": {
