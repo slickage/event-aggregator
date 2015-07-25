@@ -90,9 +90,7 @@ var POSTEvents = function(eventList, destURL, parallelCallback) {
 
       request.post(postOptions, individualCallback);
     });
-    
   }), parallelCallback);
-  
 };
 
 module.exports = eventAggregator;

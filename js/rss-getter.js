@@ -70,3 +70,5 @@ var cleanEvents = function(rssEvents) {
 			});
 	return(eventArray);
 };
+
+module.exports = getRSSEvents;
