@@ -17,4 +17,4 @@ var query = { // honolulu airport
   'keywords' : config.keywords
 };
 
-setTimeout(eventAggregator(query, console.log), config.check_frequency);
+eventAggregator(query, console.log);
