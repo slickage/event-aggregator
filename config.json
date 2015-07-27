@@ -12,8 +12,8 @@
       "calids": ["hsdc.hi@gmail.com",
                  "auhklcpgrjbfkj0n0ha0o1h38s@group.calendar.google.com"]
     },
-    "getAllRSSevents" : {
-      "urls": ['http://www.techhui.com/events/event/feed?xn_auth=no']
+    "getAllRSSEvents" : {
+      "urls": ["http://www.techhui.com/events/event/feed?xn_auth=no"]
     }
   },
   "check_frequency": 43200000,
