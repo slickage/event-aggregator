@@ -11,6 +11,9 @@
       "apikey": "AIzaSyBcxfzlYVchESyN1eITak9GKyo0a1lG9K4",
       "calids": ["hsdc.hi@gmail.com",
                  "auhklcpgrjbfkj0n0ha0o1h38s@group.calendar.google.com"]
+    },
+    "getAllRSSEvents" : {
+      "urls": ["http://www.techhui.com/events/event/feed?xn_auth=no"]
     }
   },
   "check_frequency": 43200000,

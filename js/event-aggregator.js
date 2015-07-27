@@ -18,8 +18,8 @@ var eventAggregator = function(queryHash, successCallback, providerName) {
 	var config = loadConfig('./config.json');
 	
 	var eventProviders = Object.keys(agg);
-	if (typeof singleProvider !== 'undefined') { // singleProvider case
-		eventProviders = [singleProvider];
+	if (typeof providerName !== 'undefined') { // singleProvider case
+		eventProviders = [providerName];
 	}
 
 	async.waterfall([
@@ -33,9 +33,9 @@ var eventAggregator = function(queryHash, successCallback, providerName) {
 														 queryHash);
 		},
     // STEP 2
-		function(cleanEvents, nextCallback) {
+		function(cleanEvents /*, nextCallback */) {
 			// console.log('entered second step');
-			POSTEvents(cleanEvents, config.api_url, successCallback);
+      POSTEvents(cleanEvents, config.api_url, successCallback);
 		},
   ]);
 };
@@ -90,9 +90,7 @@ var POSTEvents = function(eventList, destURL, parallelCallback) {
 
       request.post(postOptions, individualCallback);
     });
-    
   }), parallelCallback);
-  
 };
 
 module.exports = eventAggregator;

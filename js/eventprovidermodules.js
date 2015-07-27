@@ -2,5 +2,6 @@
 module.exports = {
 	getEventbriteEvents : require('./eventbrite-aggregator.js'),
 	getMeetupEvents : require('./meetup-aggregator.js'),
-  getAllGCalEvents : require('./gcal-aggregator.js')
+  getAllGCalEvents : require('./gcal-aggregator.js'),
+  getAllRSSEvents : require('./rss-aggregator.js')
 };
