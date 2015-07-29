@@ -1,5 +1,5 @@
 {
-	"api_url" : "http://127.0.0.1:3000/api/events",
+  "api_url" : "http://127.0.0.1:3000/api/events",
   "providers" : {
 	  "getEventbriteEvents" : {
 		  "token" : "5OTKXGRDYWFRA2SWONXT"
