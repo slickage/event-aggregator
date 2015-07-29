@@ -2,11 +2,18 @@
   "name": "event-aggregator",
   "version": "0.0.1",
   "description": "event aggregator for hnl.io",
+  "repository": {
+      "type": "git",
+      "url": "https://github.com/talexand/event-aggregator.git"
+  },
   "directories": {
     "doc": "docs"
   },
   "scripts": {
     "test": "mocha -u tdd tests/; jasmine"
+  },
+  "bin": {
+    "event-aggregator": "./js/scrape-all.sh"
   },
   "author": "Trevor Alexander",
   "license": "ISC",

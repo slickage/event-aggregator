@@ -3,6 +3,13 @@
 event aggregator for hnl.io
 
 
+## how to use
+
+1. `git clone`
+2. `npm install`
+2. optional: `npm install -g`
+    3. `event-aggregator # scrape all events and POST event array to localhost:3000`
+
 ## design
 
 The goal is to write the following functions:
@@ -35,6 +42,11 @@ The main function, `event-aggregator`, goes through the following steps (using
   - [x] Tests (passing)
   - [x] Implementation
   - [ ] Docs
+- [ ] RSS
+  - [ ] Tests (passing)
+    - [x] All but one
+  - [x] Implementation
+  - [ ] Docs  
 - [ ] Facebook wrapper
   - [ ] Tests
   - [ ] Implementation
