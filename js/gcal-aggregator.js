@@ -9,7 +9,6 @@ var getAllGCalEvents = function(options, eventsCallback) {
     return getGCalEvents(calID, options.apikey, singleCallback);
   };
 
-  // console.log(options.calids);
   async.map(options.calids, getGCalEventsPreConfig, function(err, results) {
     if (err) {
       eventsCallback(err);

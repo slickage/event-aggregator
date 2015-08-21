@@ -17,7 +17,6 @@ var getMeetupEvents = function(options, callback, queryHash) {
 
 	var GETURL = 'https://api.meetup.com/2/open_events.json?' + queryString +
 			'&key=' + authToken;
-  // console.log(GETURL);
   
 	var GETBody = '';
 	https.get(GETURL, function(res) {
@@ -49,8 +48,6 @@ var translateGenQuery = function(genQuery) {
 
 var cleanEvents = function(rawEvents) {
   var meetupEvents = JSON.parse(rawEvents);
-  // console.log('meetup events response: ');
-  // console.log(meetupEvents.results);
 
   if (!(meetupEvents.hasOwnProperty('results'))) {
     // meetup will complain if we provide it with a bad request

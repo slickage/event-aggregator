@@ -19,7 +19,6 @@ var getEventbriteEvents = function(options, callback, queryHash) {
 
 	var GETURL = 'https://www.eventbriteapi.com/v3/events/search?' + queryString +
 			'&token=' + authToken;
-  // console.log(GETURL);
 
   var GETBody = '';
 	https.get(GETURL, function(res) {
@@ -27,7 +26,6 @@ var getEventbriteEvents = function(options, callback, queryHash) {
 			GETBody += chunk.toString();
 		});
 		res.on('end', function() {
-      // console.log('HTTP ' + res.statusCode);
       // pass complete response body to data munger      
 			callback(null, cleanEvents(GETBody));
 		});
@@ -58,7 +56,6 @@ var translateGenQuery = function(genQuery) {
 var cleanEvents = function(rawEvents) {
   
   var eventbriteEvents = JSON.parse(rawEvents);
-  // console.log(eventbriteEvents.hasOwnProperty('results'));
   if (!(eventbriteEvents.hasOwnProperty('events'))) {
     // eventbrite doesn't complain out loud if we give a bad request, but we can
     // guess

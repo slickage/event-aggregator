@@ -4,7 +4,6 @@ var getRSSEvents = require('./rss-getter.js');
 var getAllRSSEvents = function(options, eventsCallback) {
   // this just fires getRSSEvents on an array of rss URLs
 
-  // console.log(options.urls);
   async.map(options.urls, getRSSEvents, function(err, results) {
     if (err) {
       eventsCallback(err);

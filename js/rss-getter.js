@@ -31,12 +31,6 @@ var getRSSEvents = function(feedURL, callback) {
 
 var cleanEvents = function(rssEvents) {
   
-  // console.log(rssEvents.hasOwnProperty('results'));
-  // if (!(rssEvents.hasOwnProperty('events'))) {
-  //   // eventbrite doesn't complain out loud if we give a bad request, but we can
-  //   // guess
-  //   throw new Error('Bad request');
-  // }
   if (rssEvents.length === 0) {
     // empty array case, i.e. no events
     return([]);

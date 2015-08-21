@@ -36,7 +36,6 @@ var getGCalEvents = function(calID, authToken, callback) {
 			GETBody += chunk.toString();
 		});
 		res.on('end', function() {
-      // console.log('HTTP ' + res.statusCode);
       // pass complete response body to data munger 
 			callback(null, cleanEvents(GETBody));
 		});
@@ -85,8 +84,6 @@ var cleanEvents = function(rawEvents) {
         } else {
           cleanEvent.end = null;
         }
-        console.log(thisEvent.summary);
-        // console.log(thisEvent.created);
 				cleanEvent.upstream_created_at =
           new Date(thisEvent.created).toISOString();
 				cleanEvent.upstream_updated_at =
