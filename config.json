@@ -16,6 +16,11 @@
       "urls": ["http://www.techhui.com/events/event/feed?xn_auth=no"]
     }
   },
+  "base_location": {
+    "lat" : 21.33,
+    "lon" : -157.94,
+    "radius" : 1000000
+  },
   "check_frequency": 43200000,
   "filter_whole": true,
   "keywords": ["api",

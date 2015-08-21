@@ -9,13 +9,9 @@ var config = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
 var twoWeeksLater = new Date();
 twoWeeksLater = twoWeeksLater.setDate(twoWeeksLater.getDate() + 14);
 
-var query = { // honolulu airport
-  'lat' : 21.33,
-  'lon' : -157.94,
-  'radius' : 1000000, // 1000km
-  'time_end' : twoWeeksLater.valueOf(),
-  'keywords' : config.keywords
-};
+var query = config.base_location;
+query.time_end = twoWeeksLater.valueOf();
+query.keywords = config.keywords;
 
 // repeats check over an interval given in config.check_frequency
 // setTimeout(eventAggregator(query, console.log), config.check_frequency);
