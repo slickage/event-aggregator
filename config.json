@@ -17,6 +17,7 @@
     }
   },
   "check_frequency": 43200000,
+  "filter_whole": true,
   "keywords": ["api",
                "apple",
                "arduino",

@@ -32,9 +32,16 @@ var eventAggregator = function(queryHash, successCallback, providerName) {
 														 queryHash);
 		},
     // STEP 2
-		function(cleanEvents /*, nextCallback */) {
-      POSTEvents(cleanEvents, config.api_url, successCallback);
-		},
+    function(cleanEvents, nextCallback) {
+      keywordFilter(cleanEvents, config,
+                    function(err, filteredEvents) {
+                      nextCallback(null, filteredEvents);
+                    });
+    },
+    // STEP 3
+		function(filteredEvents /*, nextCallback */) {
+      POSTEvents(filteredEvents, config.api_url, successCallback);
+		}    
   ]);
 };
 
@@ -68,6 +75,31 @@ var getEventsFromProviders = function(providerArray, providerConfig,
 };
 
 // STEP 2
+var keywordFilter = function(eventList, config, callback) {
+  // check each of the event titles and descriptions for at least one of the
+  // keywords in config.keywords. If not present, drop the event from the array.
+  var keywords = config.keywords;
+  // if we're matching keywords against whole words and not parts of other words
+  var delimiter = config.filter_whole? " " : "";
+  var filteredEvents = eventList.filter(function(thisEvent){
+    return keywords.some(function(thisKeyword) {
+      var bodyHas, titleHas = false;
+      if (thisEvent !== null) {
+        if (thisEvent.body !== undefined) {
+          bodyHas = thisEvent.body.indexOf(thisKeyword + delimiter) > -1;
+        }
+        if (thisEvent.title !== undefined) {
+          titleHas = thisEvent.title.indexOf(thisKeyword + delimiter) > -1;
+        }
+      }
+        return bodyHas || titleHas;
+    });
+  });
+  debugger;
+  callback(null, filteredEvents);
+};
+
+// STEP 3
 var POSTEvents = function(eventList, destURL, parallelCallback) {
   async.parallel(eventList.map(function(thisEvent) {
     return(function(individualCallback) {
