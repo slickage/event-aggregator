@@ -95,7 +95,6 @@ var keywordFilter = function(eventList, config, callback) {
         return bodyHas || titleHas;
     });
   });
-  debugger;
   callback(null, filteredEvents);
 };
 
