@@ -25,7 +25,6 @@ var eventAggregator = function(queryHash, successCallback, providerName) {
 	async.waterfall([
 		// STEP 1
 		function(nextCallback) {
-			// console.log('entered first step');
 			getEventsFromProviders(eventProviders, config,
 														 function(err, cleanEvents) {
 															 nextCallback(null, cleanEvents);
@@ -34,7 +33,6 @@ var eventAggregator = function(queryHash, successCallback, providerName) {
 		},
     // STEP 2
 		function(cleanEvents /*, nextCallback */) {
-			// console.log('entered second step');
       POSTEvents(cleanEvents, config.api_url, successCallback);
 		},
   ]);
@@ -72,7 +70,6 @@ var getEventsFromProviders = function(providerArray, providerConfig,
 // STEP 2
 var POSTEvents = function(eventList, destURL, parallelCallback) {
   async.parallel(eventList.map(function(thisEvent) {
-    // console.log('making POST');
     return(function(individualCallback) {
 
       var postOptions = {
@@ -86,7 +83,8 @@ var POSTEvents = function(eventList, destURL, parallelCallback) {
           event: thisEvent
         }
 		  };
-      console.log(destURL);
+      console.log('POSTing ' + thisEvent.service +
+                  ' event to: ' + destURL);
 
       request.post(postOptions, individualCallback);
     });
