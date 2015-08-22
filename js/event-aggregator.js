@@ -86,15 +86,20 @@ var keywordFilter = function(eventList, config, callback) {
       var bodyHas, titleHas = false;
       if (thisEvent !== null) {
         if (thisEvent.body !== undefined) {
-          bodyHas = thisEvent.body.indexOf(thisKeyword + delimiter) > -1;
+          bodyHas = thisEvent.body.indexOf(delimiter +
+                                           thisKeyword +
+                                           delimiter) > -1;
         }
         if (thisEvent.title !== undefined) {
-          titleHas = thisEvent.title.indexOf(thisKeyword + delimiter) > -1;
+          titleHas = thisEvent.title.indexOf(delimiter +
+                                             thisKeyword +
+                                             delimiter) > -1;
         }
       }
-        return bodyHas || titleHas;
+      return bodyHas || titleHas;
     });
   });
+  
   callback(null, filteredEvents);
 };
 
